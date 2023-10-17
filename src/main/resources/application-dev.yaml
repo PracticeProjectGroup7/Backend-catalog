@@ -1,10 +1,6 @@
 spring:
   jpa:
     database-platform: org.hibernate.dialect.MySQL8Dialect
-    generate-ddl: true
-    show-sql: true
-    hibernate:
-      ddl-auto: create
     properties:
       hibernate:
         type: trace
@@ -15,4 +11,9 @@ spring:
     url: jdbc:mysql://localhost:3306/healdb
     username: root
     password: 123456
-    data: classpath:data-dev.sql
+
+  flyway:
+    url: jdbc:mysql://localhost:3306/healdb
+    user: root
+    password: 123456
+    baselineOnMigrate: true
