@@ -12,7 +12,7 @@ import org.teamseven.hms.backend.shared.exception.UnauthorizedAccessException;
 @Aspect
 @Component
 public class SampleAccessValidatedAspect {
-    @Before("@annotation(org.teamseven.hms.backend.shared.annotation.AccessValidated)")
+    @Before("@annotation(org.teamseven.hms.backend.shared.annotation.SampleAccessValidated)")
     private void validateAccessAllowed(JoinPoint joinPoint) {
         HttpServletRequest request = (
                 (ServletRequestAttributes) RequestContextHolder.getRequestAttributes()
