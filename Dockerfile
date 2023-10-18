@@ -9,6 +9,7 @@ ADD .mvn/wrapper /hms/.mvn/wrapper
 RUN [ "./mvnw", "-B", "-ntp", "-q", "dependency:go-offline"]
 
 COPY docker_entrypoint.sh /hms/
+CMD java -classpath src/main/java org.teamseven.hms.backend.MainServerApplication
 RUN chmod +x /hms/docker_entrypoint.sh
 
 EXPOSE 8080

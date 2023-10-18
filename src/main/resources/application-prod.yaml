@@ -1,14 +1,18 @@
 spring:
   jpa:
-    hibernate:
-      ddl-auto:
-        update
+    database-platform: org.hibernate.dialect.MySQL8Dialect
+    properties:
+      hibernate:
+        type: trace
+        show_sql: true
+        format_sql: true
+        use_sql_comments: true
   datasource:
-    url:
-      jdbc:mysql://localhost:3306/healdb
-    username:
-      root
-    password:
-      use_password_from_aws_paramstore
-    driver-class-name:
-      com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://localhost:3306/healdb
+    username: change_username
+    password: use_password_from_aws_paramstore
+  flyway:
+    url: jdbc:mysql://localhost:3306/healdb
+    user: root
+    password: 123456
+    baselineOnMigrate: true

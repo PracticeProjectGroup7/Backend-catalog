@@ -77,6 +77,15 @@ Have a try to find out how the validation works as a guard :rotating_light:
 
 If an access validation logic is only applied to a certain domain, then placing the `annotation/` directory inside the domain-specific directory is also acceptable.
 
+## Database migration
+All database changes are run automatically by Flyway on service boot up.
+
+All DDL scripts are kept inside `resources/db/migration`. Deployment scripts are prefixed by `V`, whereas revert scripts have `U` as their prefixes.
+Naming convention is as follows
+```
+{U|V}{version_num}__{description_may_be_separated_by_underscores}.sql
+```
+
 ## Running the application
 To run, use the following command:
 ```agsl
@@ -84,4 +93,7 @@ To run, use the following command:
 ```
 Omit `clean` if you don't need to clean the old build files generated.
 
-Alternatively, you can also try running the application using Docker :D
+Alternatively, you can also try running the application using Docker :D. This exposes the service on port 8080
+```agsl
+docker compose up -d
+```

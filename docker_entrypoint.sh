@@ -2,9 +2,7 @@
 
 set -e
 
-./mvnw spring-boot:run -Dspring-boot.run.jvmArguments="\
- -Ddemo-host=${POSTGRES_USER} \
-" &
+./mvnw clean spring-boot:run -Dspring-boot.run.profiles=dev
 
 while true; do
   echo "Building"
