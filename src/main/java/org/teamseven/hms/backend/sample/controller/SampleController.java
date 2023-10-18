@@ -59,7 +59,7 @@ public class SampleController {
         );
     }
 
-    @GetMapping("/patients/{id}")
+    @GetMapping("/patients/{uuid}")
     public ResponseEntity<ResponseWrapper> getPatient(@PathVariable String uuid) {
         return ResponseEntity.ok(
                 new ResponseWrapper.Success<>(sampleService.getSamplePatientInfo(UUID.fromString(uuid)))

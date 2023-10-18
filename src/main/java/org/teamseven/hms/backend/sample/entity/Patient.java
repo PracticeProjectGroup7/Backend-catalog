@@ -15,7 +15,7 @@ import java.util.UUID;
 //        }
 )
 @SQLDelete(sql = "UPDATE patients SET is_active = true WHERE id=?")
-@Where(clause = "is_active = false")
+@Where(clause = "is_active = true")
 @Entity
 public class Patient {
     @Id
