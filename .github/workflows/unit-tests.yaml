@@ -1,4 +1,4 @@
-name: Run unit tests for every PR raised
+name: Unit tests
 on:
   pull_request:
     types: [opened, reopened, review_requested, edited]
