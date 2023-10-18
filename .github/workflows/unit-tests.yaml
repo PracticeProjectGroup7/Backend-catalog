@@ -1,7 +1,7 @@
 name: Unit tests
 on:
   pull_request:
-    types: [opened, reopened, review_requested, edited]
+    types: [opened, reopened, review_requested, edited, synchronize]
 defaults:
   run:
     shell: bash

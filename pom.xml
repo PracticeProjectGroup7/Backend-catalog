@@ -97,6 +97,17 @@
       <scope>test</scope>
       <version>2.2.220</version>
     </dependency>
+    <dependency>
+      <groupId>org.jacoco</groupId>
+      <artifactId>jacoco-maven-plugin</artifactId>
+      <version>0.8.10</version>
+      <exclusions>
+        <exclusion>  <!-- declare the exclusion here -->
+          <groupId>sample.ProjectB</groupId>
+          <artifactId>Project-B</artifactId>
+        </exclusion>
+      </exclusions>
+    </dependency>
   </dependencies>
   <build>
     <plugins>
