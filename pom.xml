@@ -103,8 +103,8 @@
       <version>0.8.10</version>
       <exclusions>
         <exclusion>  <!-- declare the exclusion here -->
-          <groupId>sample.ProjectB</groupId>
-          <artifactId>Project-B</artifactId>
+          <groupId>junit</groupId>
+          <artifactId>junit</artifactId>
         </exclusion>
       </exclusions>
     </dependency>
