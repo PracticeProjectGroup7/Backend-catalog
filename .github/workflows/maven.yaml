@@ -30,6 +30,6 @@ jobs:
     - name: Create jar file
       run: ./mvnw package
     - name: Execute jar file
-      run: sudo kill -9 'sudo lsof -t -i:80' & sudo java -jar /home/ubuntu/actions-runner/_work/Backend/Backend/target/backend-0.0.1-SNAPSHOT.jar &
+      run: sudo kill -9 'sudo lsof -t -i:8080' & sudo java -Dspring.profiles.active="dev" -jar /home/ubuntu/actions-runner/_work/Backend/Backend/target/backend-0.0.1-SNAPSHOT.jar &
       
 

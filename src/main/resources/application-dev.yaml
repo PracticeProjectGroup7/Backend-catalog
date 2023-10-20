@@ -8,12 +8,12 @@ spring:
         format_sql: true
         use_sql_comments: true
   datasource:
-    url: jdbc:mysql://localhost:3306/healdb
-    username: root
-    password: 123456
+    url: hmsrdstrial.cqunz6ixnkor.ap-southeast-1.rds.amazonaws.com
+    username: HMSAdmin
+    password: HMSAdmin
 
   flyway:
-    url: jdbc:mysql://localhost:3306/healdb
-    user: root
-    password: 123456
+    url: hmsrdstrial.cqunz6ixnkor.ap-southeast-1.rds.amazonaws.com
+    user: HMSAdmin
+    password: HMSAdmin
     baselineOnMigrate: true
