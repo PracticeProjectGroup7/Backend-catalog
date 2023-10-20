@@ -10,6 +10,7 @@ import org.teamseven.hms.backend.user.Role;
 import org.teamseven.hms.backend.user.User;
 import org.teamseven.hms.backend.user.UserRepository;
 
+import java.util.HashMap;
 import java.util.Optional;
 
 @Service
@@ -21,7 +22,7 @@ public class AuthenticationService {
     private final JwtService jwtService;
     private final AuthenticationManager authenticationManager;
 
-    public AuthenticationResponse register(RegisterRequest request) {
+    public HashMap<String, Object> register(RegisterRequest request) {
         var user = User.builder()
                 .firstname(request.getFirstname())
                 .lastname(request.getLastname())
@@ -35,16 +36,20 @@ public class AuthenticationService {
                 .phone(request.getPhone())
                 .nric(request.getNric())
                 .build();
-        Optional<User> userExists = repository.findByEmail(request.getEmail());
-        if (userExists.isPresent()) {
+        User userExists = repository.findByEmail(request.getEmail());
+        if (userExists != null && userExists.getIsactive() == 1) {
            throw new IllegalStateException("User already exists!");
         }
-        repository.save(user);
+        var savedUser = repository.save(user);
         var jwtToken = jwtService.generateToken(user);
-        return AuthenticationResponse
+        HashMap<String, Object> response = new HashMap<>();
+        response.put("token", AuthenticationResponse
                 .builder()
                 .token(jwtToken)
-                .build();
+                .build()
+                .getToken());
+        response.put("user", savedUser);
+        return response;
     }
 
     public AuthenticationResponse authenticate(AuthenticationRequest request) {
@@ -54,7 +59,10 @@ public class AuthenticationService {
                         request.getPassword()
                 )
         );
-        var user = repository.findByEmail(request.getEmail()).orElseThrow( );
+        var user = repository.findByEmail(request.getEmail());
+        if(user == null) {
+            throw new IllegalStateException("User not found!");
+        }
         var jwtToken = jwtService.generateToken(user);
         return AuthenticationResponse
                 .builder()

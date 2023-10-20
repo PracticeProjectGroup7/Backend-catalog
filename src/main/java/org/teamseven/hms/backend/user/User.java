@@ -12,8 +12,8 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
+import java.time.OffsetDateTime;
 import java.util.Collection;
-import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 
@@ -44,6 +44,11 @@ public class User implements UserDetails {
     @Column(columnDefinition = "VARCHAR(2)")
     private String gender;
     private String type;
+    @Column(name="isactive", insertable = false)
+    private Integer isactive = 1;
+    @Column(name="createdat", insertable = false)
+    private OffsetDateTime createdat = OffsetDateTime.now();
+    private OffsetDateTime modifiedat;
 
 
 
