@@ -130,7 +130,6 @@
         <artifactId>flyway-maven-plugin</artifactId>
         <version>9.22.2</version>
       </plugin>
-      <sourceDirectory>src</sourceDirectory>
 			<plugin>
 				<artifactId>maven-assembly-plugin</artifactId>
 				<configuration>
