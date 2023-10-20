@@ -37,8 +37,8 @@ public class AuthenticationService {
                 .nric(request.getNric())
                 .build();
         User userExists = repository.findByEmail(request.getEmail());
-        if (userExists != null && userExists.getIsactive() == 1) {
-           throw new IllegalStateException("User already exists!");
+        if (userExists != null) {
+           throw new IllegalArgumentException("User already exists!");
         }
         var savedUser = repository.save(user);
         var jwtToken = jwtService.generateToken(user);
