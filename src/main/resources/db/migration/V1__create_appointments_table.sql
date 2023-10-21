@@ -1,5 +1,5 @@
 CREATE TABLE appointments(
-    id binary(16) PRIMARY KEY DEFAULT (UUID_TO_BIN(UUID())),
+    appointment_id binary(16) PRIMARY KEY DEFAULT (UUID_TO_BIN(UUID())),
     patient_id binary(16) NOT NULL,
     diagnosis TEXT,
     prescription TEXT,

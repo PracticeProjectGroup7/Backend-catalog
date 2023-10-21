@@ -2,6 +2,8 @@ package org.teamseven.hms.backend.booking.entity;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
+import lombok.Builder;
+import lombok.Data;
 import org.hibernate.annotations.Generated;
 import org.hibernate.annotations.SQLDelete;
 import org.hibernate.annotations.Where;
@@ -11,6 +13,8 @@ import java.math.BigInteger;
 import java.time.OffsetDateTime;
 import java.util.UUID;
 
+@Data
+@Builder
 @Entity
 @SQLDelete(sql = "UPDATE bookings SET is_active = true WHERE id=?")
 @Where(clause = "is_active = true")
@@ -57,108 +61,4 @@ public class Booking {
     private OffsetDateTime createdAt;
 
     private OffsetDateTime modifiedAt;
-
-    public UUID getAppointmentId() {
-        return appointmentId;
-    }
-
-    public void setAppointmentId(UUID appointmentId) {
-        this.appointmentId = appointmentId;
-    }
-
-    public UUID getTestId() {
-        return testId;
-    }
-
-    public void setTestId(UUID testId) {
-        this.testId = testId;
-    }
-
-    public UUID getServiceId() {
-        return serviceId;
-    }
-
-    public void setServiceId(UUID serviceId) {
-        this.serviceId = serviceId;
-    }
-
-    public UUID getPatientId() {
-        return patientId;
-    }
-
-    public void setPatientId(UUID patientId) {
-        this.patientId = patientId;
-    }
-
-    public BillStatus getBillStatus() {
-        return billStatus;
-    }
-
-    public void setBillStatus(BillStatus billStatus) {
-        this.billStatus = billStatus;
-    }
-
-    public BigDecimal getAmountPaid() {
-        return amountPaid;
-    }
-
-    public void setAmountPaid(BigDecimal amountPaid) {
-        this.amountPaid = amountPaid;
-    }
-
-    public UUID getId() {
-        return id;
-    }
-
-    public BigInteger getBillNumber() {
-        return billNumber;
-    }
-
-    public OffsetDateTime getCreatedAt() {
-        return createdAt;
-    }
-
-    public OffsetDateTime getPaidAt() {
-        return paidAt;
-    }
-
-    public void setPaidAt(OffsetDateTime paidAt) {
-        this.paidAt = paidAt;
-    }
-
-    public Long getGst() {
-        return gst;
-    }
-
-    public void setGst(Long gst) {
-        this.gst = gst;
-    }
-
-    public OffsetDateTime getStartTime() {
-        return startTime;
-    }
-
-    public void setStartTime(OffsetDateTime startTime) {
-        this.startTime = startTime;
-    }
-
-    public OffsetDateTime getEndTime() {
-        return endTime;
-    }
-
-    public void setEndTime(OffsetDateTime endTime) {
-        this.endTime = endTime;
-    }
-
-    public boolean isActive() {
-        return isActive;
-    }
-
-    public void setActive(boolean active) {
-        isActive = active;
-    }
-
-    public OffsetDateTime getModifiedAt() {
-        return modifiedAt;
-    }
 }

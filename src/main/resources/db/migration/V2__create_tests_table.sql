@@ -1,5 +1,5 @@
 CREATE TABLE tests(
-    id binary(16) PRIMARY KEY DEFAULT (UUID_TO_BIN(UUID())),
+    test_id binary(16) PRIMARY KEY DEFAULT (UUID_TO_BIN(UUID())),
     patient_id binary(16) NOT NULL,
     test_date DATE NOT NULL,
     test_name TEXT NOT NULL,

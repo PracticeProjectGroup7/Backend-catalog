@@ -2,6 +2,8 @@ package org.teamseven.hms.backend.booking.entity;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
+import lombok.Builder;
+import lombok.Data;
 import org.hibernate.annotations.Generated;
 import org.hibernate.annotations.SQLDelete;
 import org.hibernate.annotations.Where;
@@ -10,6 +12,8 @@ import java.time.OffsetDateTime;
 import java.util.Date;
 import java.util.UUID;
 
+@Data
+@Builder
 @Entity
 @SQLDelete(sql = "UPDATE tests SET is_active = true WHERE id=?")
 @Where(clause = "is_active = true")
@@ -43,66 +47,4 @@ public class Test {
     private OffsetDateTime createdAt;
 
     private OffsetDateTime modifiedAt;
-
-    public UUID getId() {
-        return id;
-    }
-    public UUID getPatientId() {
-        return patientId;
-    }
-
-    public void setPatientId(UUID patientId) {
-        this.patientId = patientId;
-    }
-
-    public Date getTestDate() {
-        return testDate;
-    }
-
-    public void setTestDate(Date testDate) {
-        this.testDate = testDate;
-    }
-
-    public String getTestName() {
-        return testName;
-    }
-
-    public void setTestName(String testName) {
-        this.testName = testName;
-    }
-
-    public String getTestReport() {
-        return testReport;
-    }
-
-    public void setTestReport(String testReport) {
-        this.testReport = testReport;
-    }
-
-    public TestStatus getStatus() {
-        return status;
-    }
-
-    public void setStatus(TestStatus status) {
-        this.status = status;
-    }
-
-    public boolean isActive() {
-        return isActive;
-    }
-
-    public void setActive(boolean active) {
-        isActive = active;
-    }
-
-    public OffsetDateTime getCreatedAt() {
-        return createdAt;
-    }
-    public OffsetDateTime getModifiedAt() {
-        return modifiedAt;
-    }
-
-    public void setModifiedAt(OffsetDateTime modifiedAt) {
-        this.modifiedAt = modifiedAt;
-    }
 }
