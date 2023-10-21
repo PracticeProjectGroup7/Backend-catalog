@@ -15,5 +15,8 @@ CREATE TABLE bookings(
     created_at datetime DEFAULT CURRENT_TIMESTAMP,
     modified_at datetime ON UPDATE CURRENT_TIMESTAMP,
     FOREIGN KEY (appointment_id) REFERENCES appointments(appointment_id) ON DELETE CASCADE,
-    FOREIGN KEY (test_id) REFERENCES tests(test_id) ON DELETE CASCADE
+    FOREIGN KEY (test_id) REFERENCES tests(test_id) ON DELETE CASCADE,
+    FOREIGN KEY (patient_id) REFERENCES patient(patientid) ON DELETE CASCADE,
+    INDEX idx_bookings_service_id (service_id),
+    INDEX idx_bookings_patient_id (patient_id)
 );

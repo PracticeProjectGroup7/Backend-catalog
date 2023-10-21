@@ -6,5 +6,6 @@ CREATE TABLE fees(
     is_active bit NOT NULL,
     created_at datetime DEFAULT CURRENT_TIMESTAMP,
     modified_at datetime ON UPDATE CURRENT_TIMESTAMP,
-    FOREIGN KEY (booking_id) REFERENCES bookings(booking_id) ON DELETE CASCADE
+    FOREIGN KEY (booking_id) REFERENCES bookings(booking_id) ON DELETE CASCADE,
+    INDEX idx_fees_booking_id (booking_id)
 );

@@ -7,5 +7,6 @@ CREATE TABLE tests(
     status VARCHAR(20) NOT NULL,
     is_active bit NOT NULL,
     created_at datetime DEFAULT CURRENT_TIMESTAMP,
-    modified_at datetime ON UPDATE CURRENT_TIMESTAMP
+    modified_at datetime ON UPDATE CURRENT_TIMESTAMP,
+    FOREIGN KEY (patient_id) REFERENCES patient(patientid) ON DELETE CASCADE
 );

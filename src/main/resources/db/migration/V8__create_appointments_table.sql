@@ -5,5 +5,6 @@ CREATE TABLE appointments(
     prescription TEXT,
     is_active bit NOT NULL,
     created_at datetime DEFAULT CURRENT_TIMESTAMP,
-    modified_at datetime ON UPDATE CURRENT_TIMESTAMP
+    modified_at datetime ON UPDATE CURRENT_TIMESTAMP,
+    FOREIGN KEY (patient_id) REFERENCES patient(patientid) ON DELETE CASCADE
 );
