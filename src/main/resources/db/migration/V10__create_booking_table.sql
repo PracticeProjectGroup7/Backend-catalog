@@ -9,14 +9,14 @@ CREATE TABLE bookings(
     amount_paid decimal(10,2),
     paid_at datetime,
     gst int NOT NULL,
-    start_time datetime NOT NULL,
-    end_time datetime NOT NULL,
+    slots TEXT NOT NULL,
+    reserved_date DATE NOT NULL,
     is_active bit NOT NULL,
     created_at datetime DEFAULT CURRENT_TIMESTAMP,
     modified_at datetime ON UPDATE CURRENT_TIMESTAMP,
     FOREIGN KEY (appointment_id) REFERENCES appointments(appointment_id) ON DELETE CASCADE,
     FOREIGN KEY (test_id) REFERENCES tests(test_id) ON DELETE CASCADE,
     FOREIGN KEY (patient_id) REFERENCES patient(patientid) ON DELETE CASCADE,
-    INDEX idx_bookings_service_id (service_id),
-    INDEX idx_bookings_patient_id (patient_id)
+    INDEX idx_bookings_patient_id (patient_id),
+    INDEX idx_bookings_service_reserved_date (service_id, reserved_date)
 );
