@@ -1,0 +1,20 @@
+CREATE TABLE useraccount (
+    `userid` binary(16) PRIMARY KEY DEFAULT (UUID_TO_BIN(UUID())),
+    `firstname` varchar(200) DEFAULT NULL,
+    `lastname` varchar(200) DEFAULT NULL,
+    `password` text,
+    `date_of_birth` varchar(200) DEFAULT NULL,
+    `email` varchar(200) DEFAULT NULL,
+    `phone` varchar(100) DEFAULT NULL,
+    `nric` varchar(100) DEFAULT NULL,
+    `type` varchar(100) DEFAULT NULL,
+    `address` text,
+    `gender` char(1) DEFAULT NULL,
+    `role` varchar(100) DEFAULT NULL,
+    `is_active` tinyint(1) DEFAULT '1',
+    `created_at` datetime DEFAULT CURRENT_TIMESTAMP,
+    `modified_at` datetime ON UPDATE CURRENT_TIMESTAMP,
+    KEY `idx_firstname` (`firstname`),
+    KEY `idx_lastname` (`lastname`),
+    KEY `idx_email` (`email`)
+);
