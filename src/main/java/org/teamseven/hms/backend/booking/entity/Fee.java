@@ -6,6 +6,8 @@ import jakarta.validation.constraints.NotNull;
 import lombok.Builder;
 import lombok.Data;
 import org.hibernate.annotations.Generated;
+import org.hibernate.annotations.SQLDelete;
+import org.hibernate.annotations.Where;
 
 import java.math.BigDecimal;
 import java.time.OffsetDateTime;
@@ -14,11 +16,13 @@ import java.util.UUID;
 @Data
 @Builder
 @Entity
+@SQLDelete(sql = "UPDATE fees SET is_active = true WHERE fee_id=?")
+@Where(clause = "is_active = true")
 @Table(name = "fees")
 public class Fee {
     @Id
     @GeneratedValue
-    private UUID id;
+    private UUID feeId;
 
     @NotNull
     private UUID bookingId;

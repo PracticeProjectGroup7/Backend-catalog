@@ -16,15 +16,17 @@ import java.util.UUID;
 @Data
 @Builder
 @Entity
-@SQLDelete(sql = "UPDATE bookings SET is_active = true WHERE id=?")
+@SQLDelete(sql = "UPDATE bookings SET is_active = true WHERE booking_id=?")
 @Where(clause = "is_active = true")
 @Table(name = "bookings")
 public class Booking {
     @Id
-    @Column(name="id", insertable=false)
+    @Column(name="booking_id", insertable=false)
     @GeneratedValue
-    private UUID id;
+    private UUID booking_id;
+
     private UUID appointmentId;
+
     private UUID testId;
 
     @NotNull

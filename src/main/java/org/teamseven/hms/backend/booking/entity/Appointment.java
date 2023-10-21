@@ -14,14 +14,14 @@ import java.util.UUID;
 @Data
 @Builder
 @Entity
-@SQLDelete(sql = "UPDATE appointments SET is_active = true WHERE id=?")
+@SQLDelete(sql = "UPDATE appointments SET is_active = true WHERE appointment_id=?")
 @Where(clause = "is_active = true")
 @Table(name = "appointments")
 public class Appointment {
     @Id
-    @Column(name="id", insertable=false)
+    @Column(name="appointment_id", insertable=false)
     @GeneratedValue
-    private UUID id;
+    private UUID appointmentId;
 
     @NotNull
     private UUID patientId;
