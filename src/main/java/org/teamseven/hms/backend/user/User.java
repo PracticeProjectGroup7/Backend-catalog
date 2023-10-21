@@ -26,8 +26,8 @@ import java.util.UUID;
 public class User implements UserDetails {
 
     @Id
-    @GeneratedValue(strategy= GenerationType.UUID)
-    @JdbcTypeCode(SqlTypes.VARCHAR)
+    @Column(name="userid", insertable=false)
+    @GeneratedValue
     private UUID userid;
     @NotNull
     private String firstname;
@@ -44,11 +44,11 @@ public class User implements UserDetails {
     @Column(columnDefinition = "VARCHAR(2)")
     private String gender;
     private String type;
-    @Column(name="isactive", insertable = false)
-    private Integer isactive = 1;
-    @Column(name="createdat", insertable = false)
-    private OffsetDateTime createdat = OffsetDateTime.now();
-    private OffsetDateTime modifiedat;
+    @Column(name="is_active", insertable = false)
+    private Integer is_active = 1;
+    @Column(name="created_at", insertable = false)
+    private OffsetDateTime created_at = OffsetDateTime.now();
+    private OffsetDateTime modified_at;
 
 
 

@@ -9,7 +9,7 @@ import org.springframework.data.jpa.repository.Query;
 public interface  UserRepository extends JpaRepository<User, UUID> {
     @Query(value = """
       select u from User u\s
-      where u.email = :email and u.isactive = 1\s
+      where u.email = :email and u.is_active = 1\s
       """)
     User findByEmail(String email);
 
