@@ -3,8 +3,10 @@ package org.teamseven.hms.backend.booking.entity;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import org.hibernate.annotations.Generated;
 import org.hibernate.annotations.SQLDelete;
 import org.hibernate.annotations.Where;
@@ -15,8 +17,10 @@ import java.util.UUID;
 
 @Data
 @Builder
+@NoArgsConstructor
+@AllArgsConstructor
 @Entity
-@SQLDelete(sql = "UPDATE fees SET is_active = true WHERE fee_id=?")
+@SQLDelete(sql = "UPDATE fees SET is_active = false WHERE fee_id=?")
 @Where(clause = "is_active = true")
 @Table(name = "fees")
 public class Fee {
