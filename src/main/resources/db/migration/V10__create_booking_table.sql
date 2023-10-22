@@ -17,6 +17,7 @@ CREATE TABLE bookings(
     FOREIGN KEY (appointment_id) REFERENCES appointments(appointment_id) ON DELETE CASCADE,
     FOREIGN KEY (test_id) REFERENCES tests(test_id) ON DELETE CASCADE,
     FOREIGN KEY (patient_id) REFERENCES patient(patientid) ON DELETE CASCADE,
+    FOREIGN KEY (service_id) REFERENCES services(servicesid) ON DELETE CASCADE,
     INDEX idx_bookings_patient_id (patient_id),
     INDEX idx_bookings_service_reserved_date (service_id, reserved_date)
 );
