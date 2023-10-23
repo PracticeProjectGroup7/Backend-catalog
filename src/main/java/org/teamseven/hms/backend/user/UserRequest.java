@@ -13,6 +13,7 @@ public class UserRequest {
     private String firstName;
     private String lastName;
     private String dateOfBirth;
+    private String password;
     private String email;
     private String nric;
     private String type;
