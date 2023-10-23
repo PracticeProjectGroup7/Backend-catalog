@@ -28,14 +28,17 @@ public class User implements UserDetails {
     @Id
     @Column(name="userid", insertable=false)
     @GeneratedValue
-    private UUID userid;
+    private UUID userId;
     @NotNull
-    private String firstname;
+    @Column(name="firstname")
+    private String firstName;
     @NotNull
-    private String lastname;
+    @Column(name="lastname")
+    private String lastName;
     @NotNull
     private String password;
-    private String date_of_birth;
+    @Column(name="date_of_birth")
+    private String dateOfBirth;
     @NotNull
     private String email;
     private String phone;

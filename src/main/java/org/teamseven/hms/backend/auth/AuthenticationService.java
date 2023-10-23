@@ -17,30 +17,30 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class AuthenticationService {
 
-    private final UserRepository repository;
+    private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
     private final JwtService jwtService;
     private final AuthenticationManager authenticationManager;
 
     public HashMap<String, Object> register(RegisterRequest request) {
         var user = User.builder()
-                .firstname(request.getFirstname())
-                .lastname(request.getLastname())
+                .firstName(request.getFirstName())
+                .lastName(request.getLastName())
                 .email(request.getEmail())
                 .password(passwordEncoder.encode(request.getPassword()))
                 .role(Role.PATIENT)
-                .date_of_birth(request.getDate_of_birth())
+                .dateOfBirth(request.getDateOfBirth())
                 .address(request.getAddress())
                 .type(request.getType())
                 .gender(request.getGender())
                 .phone(request.getPhone())
                 .nric(request.getNric())
                 .build();
-        User userExists = repository.findByEmail(request.getEmail());
+        User userExists = userRepository.findByEmail(request.getEmail());
         if (userExists != null) {
            throw new IllegalArgumentException("User already exists!");
         }
-        var savedUser = repository.save(user);
+        var savedUser = userRepository.save(user);
         var jwtToken = jwtService.generateToken(user);
         HashMap<String, Object> response = new HashMap<>();
         response.put("token", AuthenticationResponse
@@ -59,7 +59,7 @@ public class AuthenticationService {
                         request.getPassword()
                 )
         );
-        var user = repository.findByEmail(request.getEmail());
+        var user = userRepository.findByEmail(request.getEmail());
         if(user == null) {
             throw new IllegalStateException("User not found!");
         }
