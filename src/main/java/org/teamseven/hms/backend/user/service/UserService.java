@@ -3,7 +3,6 @@ package org.teamseven.hms.backend.user.service;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.teamseven.hms.backend.config.JwtService;
 import org.teamseven.hms.backend.user.UserRequest;
 import org.teamseven.hms.backend.user.User;
 import org.teamseven.hms.backend.user.UserRepository;
@@ -11,12 +10,8 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 
 @Service
 public class UserService {
-    @Autowired
-    JwtService jwtService;
-    @Autowired
-    UserRepository userRepository;
-    @Autowired
-    PasswordEncoder passwordEncoder;
+    @Autowired private UserRepository userRepository;
+    @Autowired private PasswordEncoder passwordEncoder;
 
     public User getUserProfile(HttpServletRequest request) {
         var email = request.getAttribute("email");
