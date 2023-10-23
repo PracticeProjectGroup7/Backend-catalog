@@ -55,7 +55,7 @@ public class BookingServiceTest {
                 .thenReturn(
                         Optional.of(
                                 Patient.builder().user(
-                                        User.builder().firstname("John").lastname("Doe").build()
+                                        User.builder().firstName("John").lastName("Doe").build()
                                 ).build()
                         )
                 );
