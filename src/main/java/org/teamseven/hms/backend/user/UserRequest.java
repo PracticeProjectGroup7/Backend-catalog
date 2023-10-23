@@ -10,9 +10,9 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class UserRequest {
-    private String firstname;
-    private String lastname;
-    private String date_of_birth;
+    private String firstName;
+    private String lastName;
+    private String dateOfBirth;
     private String email;
     private String nric;
     private String type;

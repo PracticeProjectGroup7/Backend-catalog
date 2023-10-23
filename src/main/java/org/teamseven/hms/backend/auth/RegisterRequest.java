@@ -10,14 +10,14 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class RegisterRequest {
-    private String firstname;
-    private String lastname;
+    private String firstName;
+    private String lastName;
     private String email;
     private String password;
     private String phone;
     private String nric;
     private String address;
-    private String date_of_birth;
+    private String dateOfBirth;
     private String type;
     private String gender;
 }

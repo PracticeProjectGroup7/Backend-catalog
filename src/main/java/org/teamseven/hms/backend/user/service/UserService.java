@@ -17,7 +17,7 @@ public class UserService {
     @Autowired
     UserRepository userRepository;
 
-    public User getUserProfile(@NonNull HttpServletRequest request) {
+    public User getUserProfile(HttpServletRequest request) {
         var email = request.getAttribute("email");
         User user = userRepository.findByEmail((String) email);
         if(user == null) {
@@ -27,21 +27,17 @@ public class UserService {
     }
 
     public User updateUserProfile(
-            @NonNull HttpServletRequest request,
-            @RequestBody UserRequest userRequest
+            HttpServletRequest request,
+            UserRequest userRequest
     ) {
-        var email = request.getAttribute("email");
-        User user = userRepository.findByEmail((String) email);
-        if(user == null) {
-            throw new IllegalStateException("User not found");
+        User user = this.getUserProfile(request);
+
+        if (userRequest.getFirstName() != null && !userRequest.getFirstName().isEmpty()) {
+            user.setFirstName(userRequest.getFirstName());
         }
 
-        if (userRequest.getFirstname() != null && !userRequest.getFirstname().isEmpty()) {
-            user.setFirstname(userRequest.getFirstname());
-        }
-
-        if (userRequest.getLastname() != null && !userRequest.getLastname().isEmpty()) {
-            user.setLastname(userRequest.getLastname());
+        if (userRequest.getLastName() != null && !userRequest.getLastName().isEmpty()) {
+            user.setLastName(userRequest.getLastName());
         }
 
         if (userRequest.getGender() != null && !userRequest.getGender().isEmpty()) {
@@ -60,13 +56,14 @@ public class UserService {
             user.setAddress(userRequest.getAddress());
         }
 
-        if (userRequest.getDate_of_birth() != null && !userRequest.getDate_of_birth().isEmpty()) {
-            user.setDate_of_birth(userRequest.getDate_of_birth());
+        if (userRequest.getDateOfBirth() != null && !userRequest.getDateOfBirth().isEmpty()) {
+            user.setDateOfBirth(userRequest.getDateOfBirth());
         }
 
         if (userRequest.getPhone() != null && !userRequest.getPhone().isEmpty()) {
             user.setPhone(userRequest.getPhone());
         }
+        System.out.println("end here");
 
         userRepository.save(user);
         return user;
