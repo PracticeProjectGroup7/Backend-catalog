@@ -1,4 +1,4 @@
-package org.teamseven.hms.backend.auth;
+package org.teamseven.hms.backend.user;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -9,15 +9,16 @@ import lombok.NoArgsConstructor;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class RegisterRequest {
+public class UserRequest {
     private String firstName;
     private String lastName;
-    private String email;
-    private String password;
-    private String phone;
-    private String nric;
-    private String address;
     private String dateOfBirth;
+    private String password;
+    private String email;
+    private String nric;
     private String type;
+    private String address;
     private String gender;
+    private String role;
+    private String phone;
 }
