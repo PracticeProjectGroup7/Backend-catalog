@@ -1,20 +1,14 @@
 package org.teamseven.hms.backend.booking.entity;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Enumerated;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.hibernate.annotations.Generated;
-import org.hibernate.annotations.SQLDelete;
-import org.hibernate.annotations.Where;
+import org.hibernate.annotations.*;
+import org.teamseven.hms.backend.catalog.entity.Service;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
@@ -40,8 +34,10 @@ public class Booking {
 
     private UUID testId;
 
-    @NotNull
-    private UUID serviceId;
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "service_id", nullable = false)
+    @OnDelete(action = OnDeleteAction.CASCADE)
+    private Service service;
 
     @NotNull
     private UUID patientId;

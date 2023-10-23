@@ -32,10 +32,8 @@ public class Service {
     @GeneratedValue
     private UUID serviceId;
 
-    @OneToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "doctorid", nullable = false)
-    @OnDelete(action = OnDeleteAction.CASCADE)
-    private Doctor doctorId;
+    @Column(name = "doctorid")
+    private UUID doctorId;
 
     private String type;
 
