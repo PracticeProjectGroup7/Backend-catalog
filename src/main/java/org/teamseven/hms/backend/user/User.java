@@ -94,6 +94,6 @@ public class User implements UserDetails {
     }
 
     public String getName() {
-        return this.firstname + " " + this.lastname;
+        return this.firstName + " " + this.lastName;
     }
 }
