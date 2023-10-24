@@ -8,13 +8,13 @@ spring:
         format_sql: true
         use_sql_comments: true
   datasource:
-    url: jdbc:mysql://codebackendrds.c8cer7bgfoe7.ap-southeast-1.rds.amazonaws.com/CodeBackendRDS
+    url: jdbc:mysql://heal-db.c8cer7bgfoe7.ap-southeast-1.rds.amazonaws.com/student
     driverClassName: com.mysql.cj.jdbc.Driver
-    username: ${{secrets.RDS_USER}}
-    password: ${{secrets.RDS_PASSWORD}}
+    username: healmaster
+    password: healgroup7
 
   flyway:
-    url: jdbc:mysql://codebackendrds.c8cer7bgfoe7.ap-southeast-1.rds.amazonaws.com/CodeBackendRDS
-    user: ${{secrets.RDS_USER}}
-    password: ${{secrets.RDS_PASSWORD}}
+    url: jdbc:mysql://heal-db.c8cer7bgfoe7.ap-southeast-1.rds.amazonaws.com/student
+    user: healmaster
+    password: healgroup7
     baselineOnMigrate: true
