@@ -20,4 +20,6 @@ public class RegisterRequest {
     private String dateOfBirth;
     private String type;
     private String gender;
+    private String bloodGroup;
+    private String medicalCondition;
 }

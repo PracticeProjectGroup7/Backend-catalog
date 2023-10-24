@@ -52,7 +52,11 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                 SecurityContextHolder.getContext().setAuthentication(authToken);
             }
         }
+        var extractClaim = jwtService.extractAllClaims(jwt);
         request.setAttribute("email", userEmail);
+        request.setAttribute("userid", extractClaim.get("userId"));
+        request.setAttribute("ROLE", extractClaim.get("ROLE"));
+        request.setAttribute("roleid", extractClaim.get("roleId"));
         filterChain.doFilter(request, response);
     }
 }

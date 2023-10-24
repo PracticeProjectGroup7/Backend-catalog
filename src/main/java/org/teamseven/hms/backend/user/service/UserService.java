@@ -3,30 +3,35 @@ package org.teamseven.hms.backend.user.service;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.teamseven.hms.backend.shared.exception.ResourceNotFoundException;
 import org.teamseven.hms.backend.user.UserRequest;
 import org.teamseven.hms.backend.user.User;
 import org.teamseven.hms.backend.user.UserRepository;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.teamseven.hms.backend.user.entity.Patient;
+import org.teamseven.hms.backend.user.entity.PatientRepository;
 
 @Service
 public class UserService {
     @Autowired private UserRepository userRepository;
     @Autowired private PasswordEncoder passwordEncoder;
+    @Autowired private PatientRepository patientRepository;
 
     public User getUserProfile(HttpServletRequest request) {
         var email = request.getAttribute("email");
         User user = userRepository.findByEmail((String) email);
         if(user == null) {
-            throw new IllegalStateException("User not found!");
+            throw new ResourceNotFoundException("User not found!");
         }
         return user;
     }
 
-    public User updateUserProfile(
+    public Patient updateUserProfile(
             HttpServletRequest request,
             UserRequest userRequest
     ) {
         User user = this.getUserProfile(request);
+        Patient patient = patientRepository.findByUser(user);
 
         if (userRequest.getFirstName() != null && !userRequest.getFirstName().isEmpty()) {
             user.setFirstName(userRequest.getFirstName());
@@ -63,9 +68,17 @@ public class UserService {
         if (userRequest.getPhone() != null && !userRequest.getPhone().isEmpty()) {
             user.setPhone(userRequest.getPhone());
         }
-        System.out.println("end here");
+
+        if (userRequest.getBloodGroup() != null && !userRequest.getBloodGroup().isEmpty()) {
+            patient.setBloodGroup(userRequest.getBloodGroup());
+        }
+
+        if (userRequest.getMedicalConditions() != null && !userRequest.getMedicalConditions().isEmpty()) {
+            patient.setMedicalCondition(userRequest.getMedicalConditions());
+        }
 
         userRepository.save(user);
-        return user;
+        patientRepository.save(patient);
+        return patient;
     }
 }
