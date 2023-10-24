@@ -7,14 +7,17 @@ spring:
         show_sql: true
         format_sql: true
         use_sql_comments: true
+      logging:
+        level:
+          org.hibernate.SQL: DEBUG
+          org.hibernate.type: TRACE
   datasource:
-    url: jdbc:mysql://heal-db.c8cer7bgfoe7.ap-southeast-1.rds.amazonaws.com/healdb
-    driverClassName: com.mysql.cj.jdbc.Driver
-    username: healmaster
-    password: healgroup7
+    url: jdbc:mysql://localhost:3306/healdb
+    username: root
+    password: password
 
   flyway:
-    url: jdbc:mysql://heal-db.c8cer7bgfoe7.ap-southeast-1.rds.amazonaws.com/healdb
-    user: healmaster
-    password: healgroup7
+    url: jdbc:mysql://localhost:3306/healdb
+    user: root
+    password: password
     baselineOnMigrate: true
