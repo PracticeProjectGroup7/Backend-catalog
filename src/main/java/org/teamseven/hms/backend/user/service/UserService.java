@@ -1,15 +1,20 @@
 package org.teamseven.hms.backend.user.service;
 
 import jakarta.servlet.http.HttpServletRequest;
+import jdk.jshell.spi.ExecutionControl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.teamseven.hms.backend.shared.exception.ResourceNotFoundException;
+import org.teamseven.hms.backend.user.Role;
 import org.teamseven.hms.backend.user.UserRequest;
 import org.teamseven.hms.backend.user.User;
 import org.teamseven.hms.backend.user.UserRepository;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.teamseven.hms.backend.user.entity.Patient;
 import org.teamseven.hms.backend.user.entity.PatientRepository;
+import org.teamseven.hms.backend.user.dto.UserWithRoleIdentifier;
+
+import java.util.Optional;
 
 @Service
 public class UserService {
@@ -24,6 +29,11 @@ public class UserService {
             throw new ResourceNotFoundException("User not found!");
         }
         return user;
+    }
+
+    public UserWithRoleIdentifier getUserWithRoleIdentifier(String email) {
+        User user =  userRepository.findByEmail(email);
+        return UserWithRoleIdentifierFactory.get(user);
     }
 
     public Patient updateUserProfile(

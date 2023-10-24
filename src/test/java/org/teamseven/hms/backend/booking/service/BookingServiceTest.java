@@ -64,7 +64,7 @@ public class BookingServiceTest {
                         .thenReturn(
                                 new PageImpl(
                                         getMockBookingList(),
-                                        PageRequest.of(1, 10),
+                                        PageRequest.of(0, 10),
                                         1L
                                 )
                         );
