@@ -54,9 +54,9 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         }
         var extractClaim = jwtService.extractAllClaims(jwt);
         request.setAttribute("email", userEmail);
-        request.setAttribute("userid", extractClaim.get("userId"));
+        request.setAttribute("userId", extractClaim.get("userId"));
         request.setAttribute("ROLE", extractClaim.get("ROLE"));
-        request.setAttribute("roleid", extractClaim.get("roleId"));
+        request.setAttribute("roleId", extractClaim.get("roleId"));
         filterChain.doFilter(request, response);
     }
 }
