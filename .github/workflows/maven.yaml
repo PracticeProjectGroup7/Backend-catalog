@@ -9,7 +9,7 @@ name: Java CI with Maven
 
 on:
   push:
-    branches: [ "Backenddevops" ]
+    branches: [ Backenddevops ]
 
 jobs:
   build:
@@ -17,8 +17,6 @@ jobs:
     runs-on: trialRunner
 
     steps:
-    - name: Clean Maven Cache
-      run: mvn clean
     - uses: actions/checkout@v3
     - name: Set up JDK 17
       uses: actions/setup-java@v3
@@ -26,6 +24,6 @@ jobs:
         java-version: '17'
         distribution: 'temurin'
         cache: maven    
-    - name: maven target # change accordingly
+    - name: Build with maven # change accordingly
       run: ./mvnw clean spring-boot:run -Dspring-boot.run.profiles=dev
       
