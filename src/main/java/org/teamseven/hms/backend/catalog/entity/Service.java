@@ -24,7 +24,7 @@ import java.util.UUID;
 @AllArgsConstructor
 @Entity
 @SQLDelete(sql = "UPDATE services SET is_active = '0' WHERE servicesid=?")
-@Where(clause = "is_active = '1'")
+@Where(clause = "is_active = 1")
 @Table(name = "services")
 public class Service {
     @Id

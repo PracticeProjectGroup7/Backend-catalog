@@ -12,7 +12,7 @@ public interface BookingRepository extends CrudRepository<Booking, UUID> {
     @Query(
             value = "SELECT * " +
                     "from bookings where patient_id = UUID_TO_BIN(:patientId) " +
-                    "ORDER BY reserved_date, created_at DESC",
+                    "ORDER BY reserved_date desc, created_at DESC",
             nativeQuery=true
     )
     Page<Booking> findPatientBookingsWithPagination(
