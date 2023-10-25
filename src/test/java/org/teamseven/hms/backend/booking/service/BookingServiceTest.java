@@ -104,7 +104,7 @@ public class BookingServiceTest {
                 .slots("1,2")
                 .bookingId(UUID.fromString("efb5f4bf-75e3-49a5-8785-bb82b70029ed"))
                 .serviceId(UUID.fromString("c4dcd184-ae0b-4cd9-bd91-22ff4ce71321"))
-                .reservedDate(new SimpleDateFormat("yyyy-MM-dd").parse("2023-12-11"))
+                .reservedDate("2023-12-11")
                 .build();
     }
 
@@ -179,7 +179,7 @@ public class BookingServiceTest {
                 .slots("1,2")
                 .bookingId(UUID.fromString("efb5f4bf-75e3-49a5-8785-bb82b70029ed"))
                 .serviceId(UUID.fromString("c4dcd184-ae0b-4cd9-bd91-22ff4ce71321"))
-                .reservedDate(new SimpleDateFormat("yyyy-MM-dd").parse("2023-12-11"))
+                .reservedDate("2023-12-11")
                 .build();
     }
 }

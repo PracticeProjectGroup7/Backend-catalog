@@ -13,7 +13,7 @@ import java.util.Date;
 @NoArgsConstructor
 public class BookingInfoResponse {
     private BookingType bookingType;
-    private Date bookingDate;
+    private String bookingDate;
     private String[] slots;
     private BookingDetails details;
 }

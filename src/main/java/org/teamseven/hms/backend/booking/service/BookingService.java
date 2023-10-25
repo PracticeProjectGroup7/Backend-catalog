@@ -1,22 +1,19 @@
 package org.teamseven.hms.backend.booking.service;
 
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.teamseven.hms.backend.booking.dto.*;
-import org.teamseven.hms.backend.booking.entity.Appointment;
-import org.teamseven.hms.backend.booking.entity.Booking;
-import org.teamseven.hms.backend.booking.entity.BookingRepository;
-import org.teamseven.hms.backend.booking.entity.Test;
+import org.teamseven.hms.backend.booking.entity.*;
 import org.teamseven.hms.backend.catalog.dto.ServiceOverview;
+import org.teamseven.hms.backend.catalog.entity.ServiceRepository;
 import org.teamseven.hms.backend.catalog.service.CatalogService;
 import org.teamseven.hms.backend.user.entity.Patient;
 import org.teamseven.hms.backend.user.entity.PatientRepository;
-import java.util.List;
-import java.util.NoSuchElementException;
-import java.util.Optional;
-import java.util.UUID;
+
+import java.util.*;
 import java.util.function.BiFunction;
 import java.util.function.Function;
 
@@ -34,6 +31,12 @@ public class BookingService {
     @Autowired private PatientRepository patientRepository;
 
     @Autowired private CatalogService catalogService;
+
+    @Autowired private AppointmentRepository appointmentRepository;
+
+    @Autowired private TestRepository testRepository;
+
+    @Autowired private ServiceRepository serviceRepository;
 
     public BookingPaginationResponse getBookingHistory(
             UUID patientId,
@@ -138,4 +141,67 @@ public class BookingService {
             }
         };
     };
+
+
+
+    @Transactional
+    public Booking reserveSlot(AddBookingRequest bookingRequest) {
+        Booking booked = new Booking();
+        if (Objects.equals(bookingRequest.getType(), BookingType.APPOINTMENT)) {
+            if(bookingExists(bookingRequest.getAppointmentDate(), bookingRequest.getSelectedSlot())) {
+                throw new IllegalStateException("Appointment already exists!");
+            }
+            var appointment = Appointment.builder()
+                    .patientId(bookingRequest.getPatientId())
+                    .isActive(true)
+                    .build();
+            appointmentRepository.save(appointment);
+            booked = book(bookingRequest, appointment.getAppointmentId(), bookingRequest.getServiceId());
+        } else if (Objects.equals(bookingRequest.getType(), BookingType.TEST)) {
+            if(testExists(bookingRequest.getAppointmentDate(), bookingRequest.getPatientId())) {
+                throw new IllegalStateException("Test already exists!");
+            }
+            var test = Test.builder()
+                    .patientId(bookingRequest.getPatientId())
+                    .testDate(bookingRequest.getAppointmentDate())
+                    .status(TestStatus.PENDING)
+                    .isActive(true)
+                    .build();
+            testRepository.save(test);
+            booked = book(bookingRequest, test.getTestId(), bookingRequest.getServiceId());
+        }
+        return booked;
+    }
+
+    private boolean testExists(String date, UUID patientId) {
+        Optional<Booking> booking = bookingRepository.checkTestExists(date, String.valueOf(patientId));
+        return booking.isPresent();
+    }
+
+    private Booking book(AddBookingRequest bookingRequest, UUID id, UUID serviceId) {
+        Appointment appointment = new Appointment();
+        Test test = new Test();
+        if(Objects.equals(bookingRequest.getType(), BookingType.APPOINTMENT)) {
+            appointment.setAppointmentId(id);
+        } else {
+            test.setTestId(id);
+        }
+        var booking = Booking.builder()
+                .patientId(bookingRequest.getPatientId())
+                .appointment(Objects.equals(bookingRequest.getType(), BookingType.APPOINTMENT) ? appointment : null)
+                .test(Objects.equals(bookingRequest.getType(), BookingType.TEST) ? test : null )
+                .serviceId(serviceId)
+                .billStatus(BillStatus.UNPAID)
+                .slots(bookingRequest.getSelectedSlot())
+                .gst(8L)
+                .reservedDate(bookingRequest.getAppointmentDate())
+                .isActive(true)
+                .build();
+        return bookingRepository.save(booking);
+    }
+
+    private boolean bookingExists(String date, String slot) {
+        Optional<Booking> booking = bookingRepository.findByAppointmentDate(date, slot);
+        return booking.isPresent();
+    }
 }
