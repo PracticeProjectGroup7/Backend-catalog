@@ -40,11 +40,16 @@ jobs:
       id: login-ecr
       uses: aws-actions/amazon-ecr-login@v1
       
+    - name: Automatic Tagging of Releases
+      id: increment-git-tag
+      run: |
+        bash ./build/git_update.sh -v major
+
     - name: Build, tag, and push docker image to Amazon ECR
       env:
         REGISTRY: 327485614156.dkr.ecr.ap-southeast-1.amazonaws.com
         REPOSITORY: trailecrrepo
-        IMAGE_TAG: latest
+        IMAGE_TAG: ${{ steps.increment-git-tag.outputs.git-tag }}
       run: |
         docker build -f Dockerfile -t $REPOSITORY .
         docker tag $REPOSITORY:$IMAGE_TAG $REGISTRY/$REPOSITORY:$IMAGE_TAG
