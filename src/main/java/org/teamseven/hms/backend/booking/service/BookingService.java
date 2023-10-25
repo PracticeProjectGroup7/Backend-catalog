@@ -4,11 +4,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
-import org.teamseven.hms.backend.booking.dto.BookingOverview;
-import org.teamseven.hms.backend.booking.dto.BookingPaginationResponse;
-import org.teamseven.hms.backend.booking.dto.BookingType;
+import org.teamseven.hms.backend.booking.dto.*;
+import org.teamseven.hms.backend.booking.entity.Appointment;
 import org.teamseven.hms.backend.booking.entity.Booking;
 import org.teamseven.hms.backend.booking.entity.BookingRepository;
+import org.teamseven.hms.backend.booking.entity.Test;
+import org.teamseven.hms.backend.catalog.dto.ServiceOverview;
+import org.teamseven.hms.backend.catalog.service.CatalogService;
 import org.teamseven.hms.backend.user.entity.Patient;
 import org.teamseven.hms.backend.user.entity.PatientRepository;
 import java.util.List;
@@ -30,6 +32,8 @@ public class BookingService {
     // migrating to microservices. make sure that @service(s) either only depend on other controllers
     // or other services of different domains.
     @Autowired private PatientRepository patientRepository;
+
+    @Autowired private CatalogService catalogService;
 
     public BookingPaginationResponse getBookingHistory(
             UUID patientId,
@@ -64,7 +68,7 @@ public class BookingService {
     }
 
     private final Function<Booking, BookingType> getBookingType = it ->
-            it.getAppointmentId() != null ? BookingType.APPOINTMENT : BookingType.TEST;
+            it.getAppointment() != null ? BookingType.APPOINTMENT : BookingType.TEST;
 
     private final Function<Booking, String[]> getSlots = it ->
             it.getSlots().split(SLOT_DELIMITER);
@@ -78,19 +82,60 @@ public class BookingService {
     };
 
 
-    private final Function<Booking, BookingOverview> getBookingOverview = it ->
-            BookingOverview
-                    .builder()
-                    .bookingDate(it.getReservedDate())
-                    .slots(getSlots.apply(it))
-                    .bookingId(it.getBookingId())
-                    .type(getBookingType.apply(it))
-                    .bookingDescription(
-                            getDescription.apply(getBookingType.apply(it), it.getService().getName())
-                    )
-                    .build();
+    private final Function<Booking, BookingOverview> getBookingOverview = it -> {
+        ServiceOverview serviceOverview = catalogService.getServiceOverview(it.getServiceId());
+
+        return BookingOverview
+                .builder()
+                .bookingDate(it.getReservedDate())
+                .slots(getSlots.apply(it))
+                .bookingId(it.getBookingId())
+                .type(getBookingType.apply(it))
+                .bookingDescription(
+                        getDescription.apply(getBookingType.apply(it), serviceOverview.getName())
+                )
+                .build();
+    };
 
     public Booking getBookingById(UUID id) {
-        return bookingRepository.findById(id).orElse(null);
+        return bookingRepository.findById(id).orElseThrow(NoSuchElementException::new);
     }
+
+    public BookingInfoResponse getBookingInfo(UUID id) {
+        Booking booking = getBookingById(id);
+
+        BookingType bookingType = getBookingType.apply(booking);
+
+        return BookingInfoResponse
+                .builder()
+                .bookingType(bookingType)
+                .bookingDate(booking.getReservedDate())
+                .slots(getSlots.apply(booking))
+                .details(getBookingDetails.apply(booking, bookingType))
+                .build();
+    }
+
+    private final BiFunction<Booking, BookingType, BookingDetails> getBookingDetails = (booking, bookingType) -> {
+        ServiceOverview serviceOverview = catalogService.getServiceOverview(booking.getServiceId());
+
+        return switch (bookingType) {
+            case TEST -> {
+                Test test = booking.getTest();
+                yield BookingDetails.Test.builder()
+                        .testName(serviceOverview.getName())
+                        .testResult(test.getTestReport())
+                        .testId(test.getTestId().toString())
+                        .build();
+            }
+            case APPOINTMENT -> {
+                Appointment appointment = booking.getAppointment();
+                yield BookingDetails.Appointment.builder()
+                        .doctorName(serviceOverview.getName())
+                        .department(serviceOverview.getDescription())
+                        .comments(appointment.getDiagnosis())
+                        .appointmentId(appointment.getAppointmentId().toString())
+                        .build();
+            }
+        };
+    };
 }

@@ -30,4 +30,15 @@ public class BookingController {
                         )
                 );
     }
+
+
+    @PatientBookingAccessValidated
+    @GetMapping(value = "bookings/{bookingId}")
+    public ResponseEntity<ResponseWrapper> getBookingDetails(
+            @PathVariable UUID bookingId
+    ) {
+        return ResponseEntity
+                .ok()
+                .body(new ResponseWrapper.Success<>(bookingService.getBookingInfo(bookingId)));
+    }
 }
