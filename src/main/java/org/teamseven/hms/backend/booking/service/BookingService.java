@@ -26,6 +26,9 @@ public class BookingService {
 
     @Autowired private BookingRepository bookingRepository;
 
+    // TODO sheila: decouple booking service from patient / user DAO in favour of convenience when
+    // migrating to microservices. make sure that @service(s) either only depend on other controllers
+    // or other services of different domains.
     @Autowired private PatientRepository patientRepository;
 
     public BookingPaginationResponse getBookingHistory(
@@ -46,7 +49,7 @@ public class BookingService {
         return BookingPaginationResponse
                 .builder()
                 .bookingList(bookingList)
-                .totalElements(bookingPage.getNumberOfElements())
+                .totalElements(bookingPage.getTotalElements())
                 .patientName(patientName)
                 .build();
     }
@@ -86,4 +89,8 @@ public class BookingService {
                             getDescription.apply(getBookingType.apply(it), it.getService().getName())
                     )
                     .build();
+
+    public Booking getBookingById(UUID id) {
+        return bookingRepository.findById(id).orElse(null);
+    }
 }

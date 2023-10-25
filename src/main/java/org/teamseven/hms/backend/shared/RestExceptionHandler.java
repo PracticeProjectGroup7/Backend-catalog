@@ -8,6 +8,8 @@ import org.teamseven.hms.backend.shared.exception.ResourceNotFoundException;
 import org.teamseven.hms.backend.shared.exception.SampleCustomFieldUnexpectedException;
 import org.teamseven.hms.backend.shared.exception.UnauthorizedAccessException;
 
+import java.util.NoSuchElementException;
+
 @ControllerAdvice
 public class RestExceptionHandler {
 
@@ -49,6 +51,15 @@ public class RestExceptionHandler {
     @ExceptionHandler(ResourceNotFoundException.class)
     public ResponseEntity<ResponseWrapper> handleNotFoundExc(
             ResourceNotFoundException exception
+    ) {
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(
+                new ResponseWrapper.GenericError(exception.getMessage())
+        );
+    }
+
+    @ExceptionHandler(NoSuchElementException.class)
+    public ResponseEntity<ResponseWrapper> handleNoSuchElementException(
+            NoSuchElementException exception
     ) {
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(
                 new ResponseWrapper.GenericError(exception.getMessage())
