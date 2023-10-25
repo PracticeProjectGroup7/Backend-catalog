@@ -8,7 +8,6 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.*;
-import org.teamseven.hms.backend.catalog.entity.Service;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
@@ -30,14 +29,17 @@ public class Booking {
     @GeneratedValue
     private UUID bookingId;
 
-    private UUID appointmentId;
-
-    private UUID testId;
-
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "service_id", nullable = false)
+    @OneToOne(fetch = FetchType.LAZY)
     @OnDelete(action = OnDeleteAction.CASCADE)
-    private Service service;
+    @JoinColumn(name = "appointment_id")
+    private Appointment appointment;
+
+    @OneToOne(fetch = FetchType.LAZY)
+    @OnDelete(action = OnDeleteAction.CASCADE)
+    @JoinColumn(name = "test_id")
+    private Test test;
+
+    private UUID serviceId;
 
     @NotNull
     private UUID patientId;

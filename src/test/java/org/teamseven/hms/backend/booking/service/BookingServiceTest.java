@@ -4,16 +4,15 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
-import org.teamseven.hms.backend.booking.dto.BookingOverview;
-import org.teamseven.hms.backend.booking.dto.BookingPaginationResponse;
-import org.teamseven.hms.backend.booking.dto.BookingType;
+import org.teamseven.hms.backend.booking.dto.*;
+import org.teamseven.hms.backend.booking.entity.Appointment;
 import org.teamseven.hms.backend.booking.entity.Booking;
 import org.teamseven.hms.backend.booking.entity.BookingRepository;
-import org.teamseven.hms.backend.catalog.entity.Service;
+import org.teamseven.hms.backend.catalog.dto.ServiceOverview;
+import org.teamseven.hms.backend.catalog.service.CatalogService;
 import org.teamseven.hms.backend.user.User;
 import org.teamseven.hms.backend.user.entity.Patient;
 import org.teamseven.hms.backend.user.entity.PatientRepository;
@@ -27,6 +26,8 @@ import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 public class BookingServiceTest {
@@ -36,13 +37,16 @@ public class BookingServiceTest {
     @Mock
     private PatientRepository patientRepository;
 
+    @Mock
+    private CatalogService catalogService;
+
     @InjectMocks
     private BookingService bookingService;
 
 
     @Test
     public void testGetBookingHistory_patientNotFound_assertThrowsException() {
-        Mockito.when(patientRepository.findById(any())).thenReturn(Optional.empty());
+        when(patientRepository.findById(any())).thenReturn(Optional.empty());
 
         assertThrows(NoSuchElementException.class, () -> {
             bookingService.getBookingHistory(UUID.randomUUID(), 1, 10);
@@ -51,7 +55,7 @@ public class BookingServiceTest {
 
     @Test
     public void testGetBookingHistory_patientFound_returnFormattedDataFromRepository() throws ParseException {
-        Mockito.when(patientRepository.findById(any()))
+        when(patientRepository.findById(any()))
                 .thenReturn(
                         Optional.of(
                                 Patient.builder().user(
@@ -60,7 +64,7 @@ public class BookingServiceTest {
                         )
                 );
 
-        Mockito.when(bookingRepository.findPatientBookingsWithPagination(any(), any()))
+        when(bookingRepository.findPatientBookingsWithPagination(any(), any()))
                         .thenReturn(
                                 new PageImpl(
                                         getMockBookingList(),
@@ -68,6 +72,15 @@ public class BookingServiceTest {
                                         1L
                                 )
                         );
+
+        when(catalogService.getServiceOverview(any()))
+                .thenReturn(
+                        ServiceOverview.builder()
+                                .serviceId(UUID.randomUUID())
+                                .name("Loki")
+                                .description("test description")
+                                .build()
+                );
 
         BookingPaginationResponse response = bookingService.getBookingHistory(UUID.randomUUID(), 1, 10);
 
@@ -82,14 +95,91 @@ public class BookingServiceTest {
     }
 
     private List<Booking> getMockBookingList() throws ParseException {
-        return List.of(
-                Booking.builder()
-                        .appointmentId(UUID.randomUUID())
-                        .slots("1,2")
-                        .bookingId(UUID.fromString("efb5f4bf-75e3-49a5-8785-bb82b70029ed"))
-                        .service(Service.builder().name("Loki").build())
-                        .reservedDate(new SimpleDateFormat("yyyy-MM-dd").parse("2023-12-11"))
-                        .build()
+        return List.of(getAppointmentBooking());
+    }
+
+    private Booking getAppointmentBooking() throws ParseException {
+        return Booking.builder()
+                .appointment(Appointment.builder().diagnosis("test").appointmentId(UUID.randomUUID()).build())
+                .slots("1,2")
+                .bookingId(UUID.fromString("efb5f4bf-75e3-49a5-8785-bb82b70029ed"))
+                .serviceId(UUID.fromString("c4dcd184-ae0b-4cd9-bd91-22ff4ce71321"))
+                .reservedDate(new SimpleDateFormat("yyyy-MM-dd").parse("2023-12-11"))
+                .build();
+    }
+
+    @Test
+    public void testGetBookingInfo_bookingNotFound_throwsNoSuchElement() {
+        when(bookingRepository.findById(any())).thenReturn(Optional.empty());
+
+        UUID uuid = UUID.randomUUID();
+
+        assertThrows(
+                NoSuchElementException.class,
+                () -> bookingService.getBookingById(uuid)
         );
+
+        verify(bookingRepository).findById(uuid);
+    }
+
+    @Test
+    public void testGetBookingInfo_appointmentBookingFound_returnBookingDetails() throws ParseException{
+        when(bookingRepository.findById(any())).
+                thenReturn(Optional.of(getAppointmentBooking()));
+
+        when(catalogService.getServiceOverview(any()))
+                .thenReturn(
+                        ServiceOverview.builder()
+                                .name("Dr. Loki")
+                                .description("Dermatology")
+                                .build()
+                );
+
+        UUID uuid = UUID.randomUUID();
+
+        BookingInfoResponse response = bookingService.getBookingInfo(uuid);
+
+        verify(bookingRepository).findById(uuid);
+        verify(catalogService).getServiceOverview(UUID.fromString("c4dcd184-ae0b-4cd9-bd91-22ff4ce71321"));
+        assertTrue(response.getDetails() instanceof BookingDetails.Appointment);
+        BookingDetails.Appointment details = (BookingDetails.Appointment) response.getDetails();
+        assertEquals("Dr. Loki", details.getDoctorName());
+        assertEquals("Dermatology", details.getDepartment());
+        assertEquals("test", details.getComments());
+    }
+
+    @Test
+    public void testGetBookingInfo_testBookingFound_returnBookingDetails() throws ParseException{
+        when(bookingRepository.findById(any())).
+                thenReturn(Optional.of(getTestBooking()));
+
+        when(catalogService.getServiceOverview(any()))
+                .thenReturn(ServiceOverview.builder().name("Lab test").build());
+
+        UUID uuid = UUID.randomUUID();
+
+        BookingInfoResponse response = bookingService.getBookingInfo(uuid);
+
+        verify(bookingRepository).findById(uuid);
+        verify(catalogService).getServiceOverview(UUID.fromString("c4dcd184-ae0b-4cd9-bd91-22ff4ce71321"));
+        assertTrue(response.getDetails() instanceof BookingDetails.Test);
+        BookingDetails.Test details = (BookingDetails.Test) response.getDetails();
+        assertEquals("Lab test", details.getTestName());
+        assertEquals("report", details.getTestResult());
+    }
+
+    private Booking getTestBooking() throws ParseException {
+        return Booking.builder()
+                .test(
+                        org.teamseven.hms.backend.booking.entity.Test.builder()
+                        .testReport("report")
+                        .testId(UUID.randomUUID())
+                        .build()
+                )
+                .slots("1,2")
+                .bookingId(UUID.fromString("efb5f4bf-75e3-49a5-8785-bb82b70029ed"))
+                .serviceId(UUID.fromString("c4dcd184-ae0b-4cd9-bd91-22ff4ce71321"))
+                .reservedDate(new SimpleDateFormat("yyyy-MM-dd").parse("2023-12-11"))
+                .build();
     }
 }

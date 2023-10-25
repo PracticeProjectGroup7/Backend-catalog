@@ -6,12 +6,9 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.hibernate.annotations.JdbcTypeCode;
-import org.hibernate.type.SqlTypes;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
-
 import java.time.OffsetDateTime;
 import java.util.Collection;
 import java.util.List;
@@ -52,8 +49,6 @@ public class User implements UserDetails {
     @Column(name="created_at", insertable = false)
     private OffsetDateTime created_at = OffsetDateTime.now();
     private OffsetDateTime modified_at;
-
-
 
     @Enumerated(EnumType.STRING)
     private Role role;

@@ -21,9 +21,6 @@ public class BookingIdParamBookingPatientAccessValidator extends BookingEndpoint
     @Override
     protected boolean isLoggedInPatientAuthorized(Object requestedResourceId, UUID loginUserId) {
         Booking booking = bookingService.getBookingById(UUID.fromString(requestedResourceId.toString()));
-        if (booking == null) {
-            throw new NoSuchElementException("Resource not found");
-        }
 
         return booking.getPatientId().equals(loginUserId);
     }
