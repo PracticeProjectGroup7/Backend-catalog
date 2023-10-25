@@ -1,5 +1,9 @@
 package org.teamseven.hms.backend.booking.annotation;
 
+import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.SignatureAlgorithm;
+import io.jsonwebtoken.security.Keys;
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.reflect.MethodSignature;
@@ -16,9 +20,11 @@ import org.springframework.web.context.request.ServletRequestAttributes;
 import org.teamseven.hms.backend.booking.controller.BookingController;
 import org.teamseven.hms.backend.config.JwtService;
 import org.teamseven.hms.backend.shared.exception.UnauthorizedAccessException;
-import org.teamseven.hms.backend.user.dto.UserWithRoleIdentifier;
+import org.teamseven.hms.backend.user.Role;
 import org.teamseven.hms.backend.user.service.UserService;
 
+import java.security.Key;
+import java.util.Map;
 import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
@@ -64,10 +70,10 @@ public class PatientBookingAccessAspectTest {
         RequestContextHolder.setRequestAttributes(new ServletRequestAttributes(request));
         request.addHeader("Authorization", "Bearer mock token");
 
-        when(jwtService.extractUsername(any())).thenReturn("mock.mail@domain.org");
-        when(userService.getUserWithRoleIdentifier(any())).thenReturn(
-                new UserWithRoleIdentifier.Doctor(UUID.fromString("166b8eb1-5ea1-408a-b0d2-fe4ee88f57eb"))
-        );
+        when(jwtService.extractAllClaims(any()))
+                .thenReturn(
+                        getMockClaims(Role.DOCTOR, UUID.randomUUID().toString())
+                );
 
         assertDoesNotThrow(
                 () -> { aspect.validateAccessAllowed(proceedingJoinPoint, patientBookingAccessValidated); }
@@ -119,15 +125,39 @@ public class PatientBookingAccessAspectTest {
         RequestContextHolder.setRequestAttributes(new ServletRequestAttributes(request));
         request.addHeader("Authorization", "Bearer mock token");
 
-        when(jwtService.extractUsername(any())).thenReturn("mock.mail@domain.org");
-        when(userService.getUserWithRoleIdentifier(any())).thenReturn(
-                new UserWithRoleIdentifier.Patient(UUID.fromString("166b8eb1-5ea1-408a-b0d2-fe4ee88f57eb"))
+        when(jwtService.extractAllClaims(any())).thenReturn(
+                getMockClaims(Role.PATIENT, "166b8eb1-5ea1-408a-b0d2-fe4ee88f57eb")
         );
+
         when(patientBookingAccessValidated.dataRequestMethod()).thenReturn(PatientDataRequestedMethod.PATIENT_ID_PATH);
         when(methodSignature.getMethod()).thenReturn(
                 BookingController.class.getMethod("getBookingHistory", UUID.class, int.class, int.class)
         );
 
         when(staticPartJoinPoint.getSignature()).thenReturn(methodSignature);
+    }
+
+    private Claims getMockClaims(
+            Role role,
+            String roleId
+    ) {
+        byte[] randomKeyBytes = "c3ab8ff13720e8ad9047dd39466b3c8974e592c2fa383d4a3960714caef0c4f2".getBytes();
+        Key mockKey = Keys.hmacShaKeyFor(randomKeyBytes);
+        String jwt = Jwts.builder()
+                .setClaims(
+                        Map.of("ROLE", role, "roleId", roleId)
+                )
+                .signWith(mockKey, SignatureAlgorithm.HS256)
+                .compact();
+        System.out.println("jwt " + jwt);
+        Claims claims = Jwts
+                .parserBuilder()
+                .setSigningKey(mockKey)
+                .build()
+                .parseClaimsJws(jwt)
+                .getBody();
+
+        System.out.println("claims " + claims.entrySet());
+        return claims;
     }
 }

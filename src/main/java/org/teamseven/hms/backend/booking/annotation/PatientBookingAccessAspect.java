@@ -1,5 +1,6 @@
 package org.teamseven.hms.backend.booking.annotation;
 
+import io.jsonwebtoken.Claims;
 import jakarta.servlet.http.HttpServletRequest;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
@@ -11,8 +12,9 @@ import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 import org.teamseven.hms.backend.config.JwtService;
 import org.teamseven.hms.backend.shared.exception.UnauthorizedAccessException;
-import org.teamseven.hms.backend.user.dto.UserWithRoleIdentifier;
-import org.teamseven.hms.backend.user.service.UserService;
+import org.teamseven.hms.backend.user.Role;
+
+import java.util.UUID;
 
 @Aspect
 @Component
@@ -20,28 +22,28 @@ public class PatientBookingAccessAspect {
     @Autowired
     private JwtService jwtService;
 
-    @Autowired
-    private UserService userService;
-
     @VisibleForTesting
     @Around("@annotation(patientBookingAccessValidated)")
-    protected Object validateAccessAllowed(ProceedingJoinPoint pjp, PatientBookingAccessValidated patientBookingAccessValidated) throws Throwable{
+    protected Object validateAccessAllowed(
+            ProceedingJoinPoint pjp,
+            PatientBookingAccessValidated patientBookingAccessValidated
+    ) throws Throwable{
         HttpServletRequest request = (
                 (ServletRequestAttributes) RequestContextHolder.currentRequestAttributes()
         ).getRequest();
         String jwtToken = getJwtToken(request);
-        String email = jwtService.extractUsername(jwtToken);
+        Claims jwtClaims = jwtService.extractAllClaims(jwtToken);
 
-        // TODO: replace with new jwt definition
-        UserWithRoleIdentifier user = userService.getUserWithRoleIdentifier(email);
+        UUID roleIdentifier = UUID.fromString(jwtClaims.get("roleId", String.class));
+        Role role = Role.valueOf(jwtClaims.get("ROLE", String.class));
 
-        switch (user.role) {
+        switch (role) {
             case PATIENT -> {
                 PatientDataRequestedMethod dataRequestMethod = patientBookingAccessValidated.dataRequestMethod();
                 BookingEndpointPatientAccessValidator validator = BookingEndpointPatientAccessValidator
                         .getValidator(dataRequestMethod);
 
-                if (!validator.isAccessGranted(pjp, user.roleIdentifier)) {
+                if (!validator.isAccessGranted(pjp, roleIdentifier)) {
                     throw new UnauthorizedAccessException();
                 }
 
