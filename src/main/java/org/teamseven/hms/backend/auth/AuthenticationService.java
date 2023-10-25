@@ -1,5 +1,6 @@
 package org.teamseven.hms.backend.auth;
 
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
@@ -27,6 +28,7 @@ public class AuthenticationService {
     private final AuthenticationManager authenticationManager;
     private final PatientRepository patientRepository;
 
+    @Transactional
     public HashMap<String, Object> register(RegisterRequest request) {
         var user = User.builder()
                 .firstName(request.getFirstName())
