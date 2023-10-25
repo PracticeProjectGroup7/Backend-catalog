@@ -51,9 +51,9 @@ public class Booking {
     @Enumerated(EnumType.STRING)
     private BillStatus billStatus;
 
-    private BigDecimal amountPaid;
+    private Double amountPaid;
 
-    private OffsetDateTime paidAt;
+    private OffsetDateTime paidAt = OffsetDateTime.now();
 
     @NotNull
     private Long gst = 8L;
@@ -62,7 +62,7 @@ public class Booking {
     private String slots;
 
     @NotNull
-    private Date reservedDate;
+    private String reservedDate;
 
     @NotNull
     private boolean isActive = true;

@@ -92,7 +92,7 @@ public class BookingControllerTest {
                                 new String[]{"1", "2"},
                                 BookingType.TEST,
                                 "Test booking description",
-                                new SimpleDateFormat("yyyy-MM-dd").parse("2023-11-12")
+                                "2023-11-12"
                         )
                 ),
                 1,
@@ -105,7 +105,7 @@ public class BookingControllerTest {
         BookingInfoResponse bookingInfoResponse = BookingInfoResponse
                 .builder()
                 .bookingType(BookingType.APPOINTMENT)
-                .bookingDate(new SimpleDateFormat("yyyy-MM-dd").parse("2023-11-12"))
+                .bookingDate("2023-11-12")
                 .slots(new String[]{"1"})
                 .details(
                         BookingDetails.Appointment.builder()

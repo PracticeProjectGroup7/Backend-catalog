@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.teamseven.hms.backend.booking.annotation.PatientBookingAccessValidated;
+import org.teamseven.hms.backend.booking.dto.AddBookingRequest;
 import org.teamseven.hms.backend.booking.service.BookingService;
 import org.teamseven.hms.backend.shared.ResponseWrapper;
 
@@ -40,5 +41,18 @@ public class BookingController {
         return ResponseEntity
                 .ok()
                 .body(new ResponseWrapper.Success<>(bookingService.getBookingInfo(bookingId)));
+    }
+
+    @PostMapping(value = "booking")
+    public ResponseEntity<ResponseWrapper> reserveBookingSlot(
+            @RequestBody AddBookingRequest bookingRequest
+    ) {
+        return ResponseEntity
+                .ok()
+                .body(
+                        new ResponseWrapper.Success<>(
+                                bookingService.reserveSlot(bookingRequest)
+                        )
+                );
     }
 }
