@@ -10,7 +10,7 @@ name: Java CI with Maven
 
 on:
   push:
-    branches: [ "main" ]
+    branches: [ "DEVOPSECS" ]
 
 jobs:
   build:
@@ -25,7 +25,27 @@ jobs:
         java-version: '17'
         distribution: 'temurin'
         cache: maven
+
     - name: Create jar file
       run: ./mvnw package
-    - name: Execute jar file
-      run: sudo kill -9 $(sudo lsof -t -i:8080) & sudo java -Dspring.profiles.active="dev" -jar /home/ubuntu/actions-runner/_work/Backend/Backend/target/backend-0.0.1-SNAPSHOT.jar &
+
+    - name: Configure AWS credentials
+      uses: aws-actions/configure-aws-credentials@v4
+      with:
+        aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+        aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        aws-region: ap-southeast-1
+        
+    - name: Login to Amazon ECR Private
+      id: login-ecr
+      uses: aws-actions/amazon-ecr-login@v2
+      
+    - name: Build, tag, and push docker image to Amazon ECR
+      env:
+        REGISTRY: 327485614156.dkr.ecr.ap-southeast-1.amazonaws.com
+        REPOSITORY: trailecrrepo
+        IMAGE_TAG: latest
+      run: |
+        docker build -t $REPOSITORY .
+        docker tag $REPOSITORY:$IMAGE_TAG $REGISTRY/$REPOSITORY:$IMAGE_TAG
+        docker push $REGISTRY/$REPOSITORY:$IMAGE_TAG
