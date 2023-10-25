@@ -29,12 +29,12 @@ public class Booking {
     @GeneratedValue
     private UUID bookingId;
 
-    @OneToOne(fetch = FetchType.LAZY)
+    @OneToOne
     @OnDelete(action = OnDeleteAction.CASCADE)
     @JoinColumn(name = "appointment_id")
     private Appointment appointment;
 
-    @OneToOne(fetch = FetchType.LAZY)
+    @OneToOne
     @OnDelete(action = OnDeleteAction.CASCADE)
     @JoinColumn(name = "test_id")
     private Test test;
