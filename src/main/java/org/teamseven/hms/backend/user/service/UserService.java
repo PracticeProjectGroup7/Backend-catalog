@@ -11,6 +11,8 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.teamseven.hms.backend.user.entity.Patient;
 import org.teamseven.hms.backend.user.entity.PatientRepository;
 
+import java.util.Optional;
+
 @Service
 public class UserService {
     @Autowired private UserRepository userRepository;
@@ -80,5 +82,14 @@ public class UserService {
         userRepository.save(user);
         patientRepository.save(patient);
         return patient;
+    }
+
+    public Patient getPatientProfile(HttpServletRequest request) {
+        var roleId = request.getAttribute("roleId");
+        Optional<Patient> patient = patientRepository.findByPatientId((String) roleId);
+        if(patient.isEmpty()) {
+            throw new ResourceNotFoundException("Patient not found!");
+        }
+        return patient.get();
     }
 }

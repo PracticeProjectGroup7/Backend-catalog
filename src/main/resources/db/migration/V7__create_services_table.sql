@@ -1,6 +1,6 @@
 CREATE TABLE services (
     `servicesid` BINARY(16) PRIMARY KEY DEFAULT (UUID_TO_BIN(UUID())),
-    `doctorid` BINARY(16) NOT NULL,
+    `doctorid` BINARY(16) DEFAULT NULL,
     `type` varchar(100) DEFAULT NULL,
     `name` varchar(200) DEFAULT NULL,
     `description` text(500) DEFAULT NULL,
