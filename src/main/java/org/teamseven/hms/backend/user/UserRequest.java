@@ -21,4 +21,6 @@ public class UserRequest {
     private String gender;
     private String role;
     private String phone;
+    private String bloodGroup;
+    private String medicalConditions;
 }

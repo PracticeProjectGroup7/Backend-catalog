@@ -7,11 +7,13 @@ import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
+import org.teamseven.hms.backend.user.Role;
 
 import javax.crypto.SecretKey;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.UUID;
 import java.util.function.Function;
 
 @Service
@@ -29,19 +31,24 @@ public class JwtService {
         return claimsResolver.apply(claims);
     }
 
-    public String generateToken(UserDetails userDetails) {
-        return generateToken(new HashMap<>(), userDetails);
+    public String generateToken(UserDetails userDetails, UUID userId, Role role, UUID roleId, String name) {
+        HashMap<String, String> claims = new HashMap<>();
+        claims.put("userId", String.valueOf(userId));
+        claims.put("ROLE", String.valueOf(role));
+        claims.put("roleId", String.valueOf(roleId));
+        claims.put("name", name);
+        return generateToken(claims, userDetails);
     }
 
     public String generateToken(
-            Map<String, Object> extraClaims,
+            Map<String, String> extraClaims,
             UserDetails userDetails
     ) {
         return buildToken(extraClaims, userDetails, 1000 * 60 * 10);
     }
 
     private String buildToken(
-            Map<String, Object> extraClaims,
+            Map<String, String> extraClaims,
             UserDetails userDetails,
             long expiration
     ) {
@@ -68,7 +75,7 @@ public class JwtService {
         return extractClaim(token, Claims::getExpiration);
     }
 
-    private Claims extractAllClaims(String token) {
+    public Claims extractAllClaims(String token) {
         return Jwts
                 .parserBuilder()
                 .setSigningKey(getSignInKey())
