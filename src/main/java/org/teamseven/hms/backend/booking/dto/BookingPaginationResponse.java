@@ -13,6 +13,6 @@ import java.util.List;
 @NoArgsConstructor
 public class BookingPaginationResponse {
     private List<BookingOverview> bookingList;
-    private int totalElements;
+    private long totalElements;
     private String patientName;
 }
