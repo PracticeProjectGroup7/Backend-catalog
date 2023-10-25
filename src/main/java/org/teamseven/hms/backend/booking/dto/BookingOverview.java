@@ -1,5 +1,6 @@
 package org.teamseven.hms.backend.booking.dto;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -17,5 +18,5 @@ public class BookingOverview {
     private String[] slots;
     private BookingType type;
     private String bookingDescription;
-    private Date bookingDate;
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd") private Date bookingDate;
 }
