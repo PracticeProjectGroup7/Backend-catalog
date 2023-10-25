@@ -46,6 +46,6 @@ jobs:
         REPOSITORY: trailecrrepo
         IMAGE_TAG: latest
       run: |
-        docker build -t $REPOSITORY .
+        docker build -f Dockerfile -t $REPOSITORY .
         docker tag $REPOSITORY:$IMAGE_TAG $REGISTRY/$REPOSITORY:$IMAGE_TAG
         docker push $REGISTRY/$REPOSITORY:$IMAGE_TAG
