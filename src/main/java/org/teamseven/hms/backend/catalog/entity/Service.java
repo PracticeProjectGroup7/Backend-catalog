@@ -35,6 +35,9 @@ public class Service {
     @Column(name = "doctorid")
     private UUID doctorId;
 
+    @Column(name = "staffid")
+    private UUID staffid;
+
     private String type;
 
     private String name;

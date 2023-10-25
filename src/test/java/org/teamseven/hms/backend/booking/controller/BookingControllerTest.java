@@ -9,9 +9,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
-import org.teamseven.hms.backend.booking.dto.BookingOverview;
-import org.teamseven.hms.backend.booking.dto.BookingPaginationResponse;
-import org.teamseven.hms.backend.booking.dto.BookingType;
+import org.teamseven.hms.backend.booking.dto.*;
 import org.teamseven.hms.backend.booking.service.BookingService;
 import org.teamseven.hms.backend.shared.ResponseWrapper;
 
@@ -100,5 +98,39 @@ public class BookingControllerTest {
                 1,
                 "Jane Doe"
         );
+    }
+
+    @Test
+    public void testGetBookingById_assertReturnBookingDetails() throws Exception {
+        BookingInfoResponse bookingInfoResponse = BookingInfoResponse
+                .builder()
+                .bookingType(BookingType.APPOINTMENT)
+                .bookingDate(new SimpleDateFormat("yyyy-MM-dd").parse("2023-11-12"))
+                .slots(new String[]{"1"})
+                .details(
+                        BookingDetails.Appointment.builder()
+                                .doctorName("Loki")
+                                .department("Dermatology")
+                                .comments("test")
+                                .appointmentId("tet appt id")
+                                .build()
+                )
+                .build();
+
+        ResponseWrapper.Success<BookingInfoResponse> expectedResponse = new ResponseWrapper.Success<>(
+                bookingInfoResponse
+        );
+
+        when(bookingService.getBookingInfo(any(UUID.class)))
+                .thenReturn(bookingInfoResponse);
+
+        mockMvc.perform(get("/api/v1/services/bookings/07fec0a8-7145-11ee-8684-0242ac130003"))
+                .andExpect(status().isOk())
+                .andExpect(content().json(objectMapper.writeValueAsString(expectedResponse)));
+
+        verify(bookingService)
+                .getBookingInfo(
+                        UUID.fromString("07fec0a8-7145-11ee-8684-0242ac130003")
+                );
     }
 }
