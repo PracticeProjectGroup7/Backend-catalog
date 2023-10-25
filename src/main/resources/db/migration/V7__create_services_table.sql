@@ -9,5 +9,5 @@ CREATE TABLE services (
     `is_active` tinyint(1) DEFAULT '1',
     `created_at` datetime DEFAULT CURRENT_TIMESTAMP,
     `modified_at` datetime ON UPDATE CURRENT_TIMESTAMP,
-    FOREIGN KEY (doctorid) REFERENCES doctor(doctorid) ON DELETE CASCADE
+    FOREIGN KEY (doctorid) REFERENCES doctor(doctorid)
 );
