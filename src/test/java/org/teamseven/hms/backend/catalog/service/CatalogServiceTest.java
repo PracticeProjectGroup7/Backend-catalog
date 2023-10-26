@@ -7,11 +7,15 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.teamseven.hms.backend.catalog.dto.ServiceCatalogPaginationResponse;
 import org.teamseven.hms.backend.catalog.dto.ServiceOverview;
 import org.teamseven.hms.backend.catalog.entity.Service;
 import org.teamseven.hms.backend.catalog.entity.ServiceRepository;
 import org.teamseven.hms.backend.catalog.entity.ServiceType;
+import org.teamseven.hms.backend.doctor.dto.DoctorProfile;
+import org.teamseven.hms.backend.doctor.service.DoctorService;
+
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Optional;
@@ -27,6 +31,9 @@ import static org.mockito.Mockito.when;
 public class CatalogServiceTest {
     @Mock
     private ServiceRepository serviceRepository;
+
+    @Mock
+    private DoctorService doctorService;
 
     @InjectMocks
     private CatalogService catalogService;
@@ -72,7 +79,7 @@ public class CatalogServiceTest {
 
     @Test
     public void testGetAvailableServices_returnFormattedDataFromRepository() {
-        List<Service> mockList = getMockServiceList();
+        List<Service> mockList = getMockTestServiceList();
 
         when(serviceRepository.findAvailableServices(any(), any()))
                 .thenReturn(
@@ -86,9 +93,51 @@ public class CatalogServiceTest {
         assertEquals(1, response.getCurrentPage());
     }
 
-    private List<Service> getMockServiceList() {
+    @Test
+    public void testGetDoctorsCatalog_returnFormattedDataFromRepository() {
+        List<Service> mockList = getMockDoctorsServiceList();
+
+        when(serviceRepository.findAvailableServices(any(), any()))
+                .thenReturn(
+                        new PageImpl(mockList, PageRequest.of(0, 10), 1L)
+                );
+
+        when(doctorService.getDoctorProfiles(any()))
+                .thenReturn(
+                        List.of(
+                                DoctorProfile
+                                        .builder()
+                                        .doctorId(UUID.fromString("7586e389-dd38-486c-937b-5fb8eab2d792"))
+                                        .specialty("test specialty")
+                                        .yearOfExperience("2.5")
+                                        .build()
+                        )
+                );
+
+        ServiceCatalogPaginationResponse response = catalogService.getServiceCatalog(ServiceType.APPOINTMENT, 1, 10);
+        verify(serviceRepository).findAvailableServices(
+                eq("APPOINTMENT"),
+                eq(Pageable.ofSize(10).withPage(0))
+        );
+
+        assertEquals(1, response.getTotalElements());
+        assertEquals(1, response.getCurrentPage());
+    }
+
+    private List<Service> getMockTestServiceList() {
         return List.of(
                 Service.builder()
+                        .serviceId(UUID.randomUUID())
+                        .name("test name")
+                        .description("test description")
+                        .build()
+        );
+    }
+
+    private List<Service> getMockDoctorsServiceList() {
+        return List.of(
+                Service.builder()
+                        .doctorId(UUID.fromString("7586e389-dd38-486c-937b-5fb8eab2d792"))
                         .serviceId(UUID.randomUUID())
                         .name("test name")
                         .description("test description")

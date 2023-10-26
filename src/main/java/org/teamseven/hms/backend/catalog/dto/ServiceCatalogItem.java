@@ -19,4 +19,18 @@ public sealed class ServiceCatalogItem {
         private UUID serviceId;
         private ServiceType type = ServiceType.TEST;
     }
+
+    @Data
+    @Builder
+    @AllArgsConstructor
+    @NoArgsConstructor
+    public static final class DoctorAppointment extends ServiceCatalogItem {
+        private String name;
+        private String description;
+        private UUID serviceId;
+        private ServiceType type = ServiceType.APPOINTMENT;
+        private UUID doctorId;
+        private String yearsOfExperience;
+        private String specialty;
+    }
 }

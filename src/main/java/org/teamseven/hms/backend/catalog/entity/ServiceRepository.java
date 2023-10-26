@@ -12,6 +12,7 @@ public interface ServiceRepository extends CrudRepository<Service, UUID> {
     @Query(
             value = "SELECT *" +
                     "from services where type = :serviceType " +
+                    "AND is_active = 1 "+
                     "ORDER BY name",
             nativeQuery=true
     )
