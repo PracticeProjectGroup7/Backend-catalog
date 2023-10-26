@@ -6,15 +6,23 @@ import org.springframework.web.bind.annotation.*;
 import org.teamseven.hms.backend.booking.annotation.PatientBookingAccessValidated;
 import org.teamseven.hms.backend.booking.dto.AddBookingRequest;
 import org.teamseven.hms.backend.booking.service.BookingService;
+import org.teamseven.hms.backend.booking.service.SlotCheckerService;
 import org.teamseven.hms.backend.shared.ResponseWrapper;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.UUID;
 
 @RestController
 @RequestMapping("/api/v1/services/")
 public class BookingController {
+    private static final String DATE_FORMAT  = "yyyy-MM-dd";
     @Autowired
     private BookingService bookingService;
+
+    @Autowired
+    private SlotCheckerService slotCheckerService;
 
     @PatientBookingAccessValidated
     @GetMapping(value = "booking-history/{patientId}")
@@ -54,5 +62,24 @@ public class BookingController {
                                 bookingService.reserveSlot(bookingRequest)
                         )
                 );
+    }
+
+    @GetMapping(value = "bookings/{serviceId}/schedules")
+    public ResponseEntity<ResponseWrapper> getAppointmentSlotsOnADay(
+            @PathVariable UUID serviceId,
+            @RequestParam String date
+    ) {
+        Date reservedDate = null;
+        try {
+            reservedDate = new SimpleDateFormat(DATE_FORMAT).parse(date);
+        } catch (ParseException e) {
+            throw new IllegalArgumentException("Date param passed in a bad format. use yyyy-MM-dd format");
+        }
+
+        return ResponseEntity.ok().body(
+                new ResponseWrapper.Success<>(
+                        slotCheckerService.getServiceSlots(serviceId, reservedDate)
+                )
+        );
     }
 }
