@@ -1,4 +1,5 @@
 spring:
+  address: localhost
   jpa:
     database-platform: org.hibernate.dialect.MySQL8Dialect
     properties:

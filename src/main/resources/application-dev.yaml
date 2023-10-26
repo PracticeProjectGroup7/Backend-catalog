@@ -18,3 +18,6 @@ spring:
     user: healmaster
     password: healgroup7
     baselineOnMigrate: true
+
+secEnvConf:
+  enableLoginGuard: false
