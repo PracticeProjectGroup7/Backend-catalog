@@ -29,9 +29,6 @@ public class Fee {
     private UUID feeId;
 
     @NotNull
-    private UUID bookingId;
-
-    @NotNull
     @Enumerated(EnumType.STRING)
     private FeeType type;
 
