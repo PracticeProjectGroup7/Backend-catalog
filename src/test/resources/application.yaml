@@ -10,4 +10,4 @@ spring:
     enabled: false
 
 secEnvConf:
-  enableLoginGuard: false
+  enableLoginGuard: true
