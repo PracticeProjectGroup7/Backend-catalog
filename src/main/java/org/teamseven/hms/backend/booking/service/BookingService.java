@@ -36,8 +36,6 @@ public class BookingService {
 
     @Autowired private TestRepository testRepository;
 
-    @Autowired private ServiceRepository serviceRepository;
-
     public BookingPaginationResponse getBookingHistory(
             UUID patientId,
             int page,
