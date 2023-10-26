@@ -8,3 +8,6 @@ spring:
     password:
   flyway:
     enabled: false
+
+secEnvConf:
+  enableLoginGuard: false
