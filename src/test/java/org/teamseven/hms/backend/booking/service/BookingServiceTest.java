@@ -11,14 +11,16 @@ import org.teamseven.hms.backend.booking.dto.*;
 import org.teamseven.hms.backend.booking.entity.Appointment;
 import org.teamseven.hms.backend.booking.entity.Booking;
 import org.teamseven.hms.backend.booking.entity.BookingRepository;
+import org.teamseven.hms.backend.booking.entity.TestStatus;
 import org.teamseven.hms.backend.catalog.dto.ServiceOverview;
 import org.teamseven.hms.backend.catalog.service.CatalogService;
 import org.teamseven.hms.backend.user.User;
+import org.teamseven.hms.backend.user.dto.PatientProfileOverview;
 import org.teamseven.hms.backend.user.entity.Patient;
 import org.teamseven.hms.backend.user.entity.PatientRepository;
+import org.teamseven.hms.backend.user.service.PatientService;
 
 import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Optional;
@@ -39,6 +41,9 @@ public class BookingServiceTest {
 
     @Mock
     private CatalogService catalogService;
+
+    @Mock
+    private PatientService patientService;
 
     @InjectMocks
     private BookingService bookingService;
@@ -78,6 +83,7 @@ public class BookingServiceTest {
                         ServiceOverview.builder()
                                 .serviceId(UUID.randomUUID())
                                 .name("Loki")
+                                .type("APPOINTMENT")
                                 .description("test description")
                                 .build()
                 );
@@ -127,11 +133,21 @@ public class BookingServiceTest {
         when(bookingRepository.findById(any())).
                 thenReturn(Optional.of(getAppointmentBooking()));
 
+        when(patientService.getPatientProfile(any()))
+                .thenReturn(
+                        PatientProfileOverview.builder()
+                                .patientName("John Doe")
+                                .gender("M")
+                                .dateOfBirth("1990-01-01")
+                                .build()
+                );
+
         when(catalogService.getServiceOverview(any()))
                 .thenReturn(
                         ServiceOverview.builder()
                                 .name("Dr. Loki")
                                 .description("Dermatology")
+                                .type("APPOINTMENT")
                                 .build()
                 );
 
@@ -154,7 +170,21 @@ public class BookingServiceTest {
                 thenReturn(Optional.of(getTestBooking()));
 
         when(catalogService.getServiceOverview(any()))
-                .thenReturn(ServiceOverview.builder().name("Lab test").build());
+                .thenReturn(
+                        ServiceOverview.builder()
+                                .name("Lab test")
+                                .type("TEST")
+                                .build()
+                );
+
+        when(patientService.getPatientProfile(any()))
+                .thenReturn(
+                        PatientProfileOverview.builder()
+                                .patientName("John Doe")
+                                .gender("M")
+                                .dateOfBirth("1990-01-01")
+                                .build()
+                );
 
         UUID uuid = UUID.randomUUID();
 
@@ -173,6 +203,7 @@ public class BookingServiceTest {
                 .test(
                         org.teamseven.hms.backend.booking.entity.Test.builder()
                         .testReport("report")
+                                .status(TestStatus.PENDING)
                         .testId(UUID.randomUUID())
                         .build()
                 )
