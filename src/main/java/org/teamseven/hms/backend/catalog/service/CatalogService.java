@@ -4,22 +4,28 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
-import org.teamseven.hms.backend.booking.dto.BookingPaginationResponse;
 import org.teamseven.hms.backend.catalog.dto.ServiceCatalogItem;
 import org.teamseven.hms.backend.catalog.dto.ServiceCatalogPaginationResponse;
 import org.teamseven.hms.backend.catalog.dto.ServiceOverview;
 import org.teamseven.hms.backend.catalog.entity.ServiceRepository;
 import org.teamseven.hms.backend.catalog.entity.ServiceType;
+import org.teamseven.hms.backend.doctor.dto.DoctorProfile;
+import org.teamseven.hms.backend.doctor.service.DoctorService;
 
 import java.util.List;
+import java.util.Map;
 import java.util.NoSuchElementException;
 import java.util.UUID;
+import java.util.function.BiFunction;
 import java.util.function.Function;
+import java.util.stream.Collectors;
 
 @Service
 public class CatalogService {
     @Autowired
     private ServiceRepository repository;
+
+    @Autowired private DoctorService doctorService;
 
     public ServiceOverview getServiceOverview(UUID serviceId) {
         org.teamseven.hms.backend.catalog.entity.Service service = repository.findById(serviceId)
@@ -55,7 +61,7 @@ public class CatalogService {
 
         List<ServiceCatalogItem> items =  switch (serviceType) {
             case TEST -> services.map(getTestCatalogItem).toList();
-            default -> List.of();
+            case APPOINTMENT -> constructDoctorAppointmentsCatalog(services);
         };
 
         return ServiceCatalogPaginationResponse.builder()
@@ -74,4 +80,31 @@ public class CatalogService {
             .serviceId(it.getServiceId())
             .type(ServiceType.TEST)
             .build();
+
+    private List<ServiceCatalogItem> constructDoctorAppointmentsCatalog(
+            Page<org.teamseven.hms.backend.catalog.entity.Service> services
+    ) {
+        List<UUID> doctorIds = services.map(it -> it.getDoctorId()).toList();
+        Map<UUID, DoctorProfile> doctorProfiles = doctorService.getDoctorProfiles(doctorIds)
+                .stream().collect(Collectors.toMap(DoctorProfile::getDoctorId, item -> item));
+
+
+        return services.map(
+                it -> getAppointmentCatalogItem.apply(it, doctorProfiles.get(it.getDoctorId()))
+        ).toList();
+    }
+
+    private final BiFunction<
+            org.teamseven.hms.backend.catalog.entity.Service,
+            DoctorProfile,
+            ServiceCatalogItem
+            > getAppointmentCatalogItem = (it, profile) -> ServiceCatalogItem.DoctorAppointment
+            .builder()
+            .doctorId(it.getDoctorId())
+            .serviceId(it.getServiceId())
+            .name(it.getName())
+            .description(it.getDescription())
+            .specialty(profile.getSpecialty())
+            .yearsOfExperience(profile.getYearOfExperience())
+            .type(ServiceType.APPOINTMENT).build();
 }

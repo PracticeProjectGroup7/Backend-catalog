@@ -11,9 +11,9 @@ import java.util.List;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class ServiceCatalogPaginationResponse {
+public class ServiceCatalogPaginationResponse<T extends ServiceCatalogItem> {
     private long totalElements;
     private int currentPage;
 
-    private List<ServiceCatalogItem> items;
+    private List<T> items;
 }
