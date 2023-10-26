@@ -1,2 +1,5 @@
 server:
   port: 8080
+
+sec-env-conf:
+  enable-login-guard: true
