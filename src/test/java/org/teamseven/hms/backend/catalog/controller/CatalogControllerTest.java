@@ -81,4 +81,38 @@ public class CatalogControllerTest {
                 .items(List.of())
                 .build();
     }
+
+    @Test
+    public void testGetAppointmentsCatalog_paginationNotSpecified_assertPaginationUseDefault() throws Exception {
+        ServiceCatalogPaginationResponse response = getMockResponse();
+        ResponseWrapper.Success<ServiceCatalogPaginationResponse> expectedResponse = new ResponseWrapper.Success<>(
+                response
+        );
+
+        when(catalogService.getServiceCatalog(any(), any(int.class), any(int.class)))
+                .thenReturn(response);
+
+        mockMvc.perform(get("/api/v1/available-services/doctors"))
+                .andExpect(status().isOk())
+                .andExpect(content().json(objectMapper.writeValueAsString(expectedResponse)));
+
+        verify(catalogService).getServiceCatalog(ServiceType.APPOINTMENT, 1, 10);
+    }
+
+    @Test
+    public void testGetAppointmentsCatalog_paginationCustomised_assertPaginationAsRequested() throws Exception {
+        ServiceCatalogPaginationResponse response = getMockResponse();
+        ResponseWrapper.Success<ServiceCatalogPaginationResponse> expectedResponse = new ResponseWrapper.Success<>(
+                response
+        );
+
+        when(catalogService.getServiceCatalog(any(), any(int.class), any(int.class)))
+                .thenReturn(response);
+
+        mockMvc.perform(get("/api/v1/available-services/doctors?page=2&pageSize=5"))
+                .andExpect(status().isOk())
+                .andExpect(content().json(objectMapper.writeValueAsString(expectedResponse)));
+
+        verify(catalogService).getServiceCatalog(ServiceType.APPOINTMENT, 2, 5);
+    }
 }
