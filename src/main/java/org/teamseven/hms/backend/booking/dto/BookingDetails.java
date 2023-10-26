@@ -16,6 +16,7 @@ public sealed class BookingDetails {
 
         private String testResult;
         private String testId;
+        private String testStatus;
     }
 
     @Data

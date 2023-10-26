@@ -16,4 +16,5 @@ public class BookingInfoResponse {
     private String bookingDate;
     private String[] slots;
     private BookingDetails details;
+    private PatientDataBookingDetails patientDetails;
 }
