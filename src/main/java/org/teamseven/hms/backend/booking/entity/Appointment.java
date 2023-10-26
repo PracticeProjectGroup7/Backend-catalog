@@ -34,6 +34,9 @@ public class Appointment {
 
     private String prescription;
 
+    @Enumerated(EnumType.STRING)
+    private AppointmentStatus status = AppointmentStatus.PENDING;
+
     @NotNull
     private boolean isActive = true;
 
