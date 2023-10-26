@@ -49,10 +49,10 @@ public class PatientBookingAccessAspect {
 
                 return pjp.proceed();
             }
-            case STAFF -> throw new UnauthorizedAccessException();
-            default -> {
+            case DOCTOR, LAB_SUPPORT_STAFF -> {
                 return pjp.proceed();
             }
+            default -> throw new UnauthorizedAccessException();
         }
     }
 
