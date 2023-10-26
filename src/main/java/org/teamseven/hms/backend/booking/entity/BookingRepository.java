@@ -2,6 +2,7 @@ package org.teamseven.hms.backend.booking.entity;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.data.repository.query.Param;
@@ -45,4 +46,11 @@ public interface BookingRepository extends CrudRepository<Booking, UUID> {
     Optional<Booking> findByBookingId(String bookingId);
 
     List<Booking> findByServiceIdAndReservedDate(UUID serviceId, String reservedDate);
+
+    @Query(value = "select * from bookings where service_id = UUID_TO_BIN(:serviceId) and reserved_date = :reservedDate and slots = :slot", nativeQuery = true)
+    Optional<Booking> findByServiceIdAndReservedDateAndSlot(String serviceId, String reservedDate, String slot);
+
+    @Modifying
+    @Query(value = "update bookings set reserved_date = :reservedDate, slots = :slot where patient_id = UUID_TO_BIN(:patientId) and service_id = UUID_TO_BIN(:serviceId)", nativeQuery = true)
+    int updateBooking(String patientId, String serviceId, String reservedDate, String slot);
 }
