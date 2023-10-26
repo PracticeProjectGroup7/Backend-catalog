@@ -37,7 +37,6 @@ public class Appointment {
     @NotNull
     private boolean isActive = true;
 
-    @Generated()
     @Column(name="created_at", insertable=false)
     private OffsetDateTime createdAt;
 

@@ -1,0 +1,2 @@
+ALTER TABLE services
+CHANGE COLUMN `doctorid` `doctorid` BINARY(16) DEFAULT NULL;

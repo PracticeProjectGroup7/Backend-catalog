@@ -4,16 +4,16 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-
-import java.util.Date;
+import java.util.UUID;
 
 @Data
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class BookingInfoResponse {
-    private BookingType bookingType;
-    private String bookingDate;
-    private String[] slots;
-    private BookingDetails details;
+public class AddBookingRequest {
+    private UUID serviceId;
+    private UUID patientId;
+    private String appointmentDate;
+    private String selectedSlot;
+    private BookingType type;
 }

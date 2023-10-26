@@ -32,9 +32,8 @@ public class Test {
     private UUID patientId;
 
     @NotNull
-    private Date testDate;
+    private String testDate;
 
-    @NotNull
     private String testName;
 
     private String testReport;
