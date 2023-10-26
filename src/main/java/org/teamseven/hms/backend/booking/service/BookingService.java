@@ -8,10 +8,11 @@ import org.springframework.stereotype.Service;
 import org.teamseven.hms.backend.booking.dto.*;
 import org.teamseven.hms.backend.booking.entity.*;
 import org.teamseven.hms.backend.catalog.dto.ServiceOverview;
-import org.teamseven.hms.backend.catalog.entity.ServiceRepository;
 import org.teamseven.hms.backend.catalog.service.CatalogService;
+import org.teamseven.hms.backend.user.dto.PatientProfileOverview;
 import org.teamseven.hms.backend.user.entity.Patient;
 import org.teamseven.hms.backend.user.entity.PatientRepository;
+import org.teamseven.hms.backend.user.service.PatientService;
 
 import java.util.*;
 import java.util.function.BiFunction;
@@ -31,6 +32,8 @@ public class BookingService {
     @Autowired private PatientRepository patientRepository;
 
     @Autowired private CatalogService catalogService;
+
+    @Autowired private PatientService patientService;
 
     @Autowired private AppointmentRepository appointmentRepository;
 
@@ -68,9 +71,6 @@ public class BookingService {
         return patient.get().getUser().getName();
     }
 
-    private final Function<Booking, BookingType> getBookingType = it ->
-            it.getAppointment() != null ? BookingType.APPOINTMENT : BookingType.TEST;
-
     private final Function<Booking, String[]> getSlots = it ->
             it.getSlots().split(SLOT_DELIMITER);
 
@@ -91,9 +91,11 @@ public class BookingService {
                 .bookingDate(it.getReservedDate())
                 .slots(getSlots.apply(it))
                 .bookingId(it.getBookingId())
-                .type(getBookingType.apply(it))
+                .type(BookingType.valueOf(serviceOverview.getType()))
                 .bookingDescription(
-                        getDescription.apply(getBookingType.apply(it), serviceOverview.getName())
+                        getDescription.apply(BookingType.valueOf(
+                                        serviceOverview.getType()),
+                                serviceOverview.getName())
                 )
                 .build();
     };
@@ -105,26 +107,34 @@ public class BookingService {
     public BookingInfoResponse getBookingInfo(UUID id) {
         Booking booking = getBookingById(id);
 
-        BookingType bookingType = getBookingType.apply(booking);
+        ServiceOverview serviceOverview = catalogService.getServiceOverview(booking.getServiceId());
+
+        PatientProfileOverview patientProfileOverview = patientService.getPatientProfile(booking.getPatientId());
+
+        PatientDataBookingDetails patientDetails = PatientDataBookingDetails.builder()
+                .dateOfBirth(patientProfileOverview.getDateOfBirth())
+                .patientName(patientProfileOverview.getPatientName())
+                .gender(patientProfileOverview.getGender())
+                .build();
 
         return BookingInfoResponse
                 .builder()
-                .bookingType(bookingType)
+                .bookingType(BookingType.valueOf(serviceOverview.getType()))
                 .bookingDate(booking.getReservedDate())
                 .slots(getSlots.apply(booking))
-                .details(getBookingDetails.apply(booking, bookingType))
+                .details(getBookingDetails.apply(booking, serviceOverview))
+                .patientDetails(patientDetails)
                 .build();
     }
 
-    private final BiFunction<Booking, BookingType, BookingDetails> getBookingDetails = (booking, bookingType) -> {
-        ServiceOverview serviceOverview = catalogService.getServiceOverview(booking.getServiceId());
-
-        return switch (bookingType) {
+    private final BiFunction<Booking, ServiceOverview, BookingDetails> getBookingDetails = (booking, serviceOverview) -> {
+        return switch (BookingType.valueOf(serviceOverview.getType())) {
             case TEST -> {
                 Test test = booking.getTest();
                 yield BookingDetails.Test.builder()
                         .testName(serviceOverview.getName())
                         .testResult(test.getTestReport())
+                        .testStatus(test.getStatus().toString())
                         .testId(test.getTestId().toString())
                         .build();
             }
@@ -139,6 +149,8 @@ public class BookingService {
             }
         };
     };
+
+
 
     @Transactional
     public Booking reserveSlot(AddBookingRequest bookingRequest) {
