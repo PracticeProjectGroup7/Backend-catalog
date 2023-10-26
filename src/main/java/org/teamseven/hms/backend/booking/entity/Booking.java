@@ -12,7 +12,7 @@ import org.hibernate.annotations.*;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.time.OffsetDateTime;
-import java.util.Date;
+import java.util.List;
 import java.util.UUID;
 
 @Data
@@ -72,4 +72,8 @@ public class Booking {
     private OffsetDateTime createdAt;
 
     private OffsetDateTime modifiedAt;
+
+    @OneToMany
+    @JoinColumn(name = "booking_id")
+    private List<Fee> fee;
 }

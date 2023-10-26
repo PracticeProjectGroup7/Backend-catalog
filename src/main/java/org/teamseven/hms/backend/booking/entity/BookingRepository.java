@@ -35,4 +35,10 @@ public interface BookingRepository extends CrudRepository<Booking, UUID> {
             nativeQuery=true
     )
     Optional<Booking> checkTestExists(String appointmentDate, String patientId);
+
+    @Query(
+            value = "SELECT * from bookings where booking_id = UUID_TO_BIN(:bookingId) ",
+            nativeQuery=true
+    )
+    Optional<Booking> findByBookingId(String bookingId);
 }
