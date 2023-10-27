@@ -13,5 +13,5 @@ import org.teamseven.hms.backend.booking.entity.TestStatus;
 @NoArgsConstructor
 public class UpdateLabTestRequest {
     @NotNull private TestStatus status;
-    @NotNull private String result;
+    private String result;
 }
