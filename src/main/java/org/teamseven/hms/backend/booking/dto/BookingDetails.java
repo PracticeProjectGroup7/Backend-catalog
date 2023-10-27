@@ -29,5 +29,6 @@ public sealed class BookingDetails {
 
         private String comments;
         private String appointmentId;
+        private String appointmentStatus;
     }
 }

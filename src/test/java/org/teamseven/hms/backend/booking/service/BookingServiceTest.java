@@ -8,10 +8,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.teamseven.hms.backend.booking.dto.*;
-import org.teamseven.hms.backend.booking.entity.Appointment;
-import org.teamseven.hms.backend.booking.entity.Booking;
-import org.teamseven.hms.backend.booking.entity.BookingRepository;
-import org.teamseven.hms.backend.booking.entity.TestStatus;
+import org.teamseven.hms.backend.booking.entity.*;
 import org.teamseven.hms.backend.catalog.dto.ServiceOverview;
 import org.teamseven.hms.backend.catalog.service.CatalogService;
 import org.teamseven.hms.backend.user.User;
@@ -106,7 +103,13 @@ public class BookingServiceTest {
 
     private Booking getAppointmentBooking() throws ParseException {
         return Booking.builder()
-                .appointment(Appointment.builder().diagnosis("test").appointmentId(UUID.randomUUID()).build())
+                .appointment(
+                        Appointment.builder()
+                                .status(AppointmentStatus.PENDING)
+                                .diagnosis("test").
+                                appointmentId(UUID.randomUUID())
+                                .build()
+                )
                 .slots("1,2")
                 .bookingId(UUID.fromString("efb5f4bf-75e3-49a5-8785-bb82b70029ed"))
                 .serviceId(UUID.fromString("c4dcd184-ae0b-4cd9-bd91-22ff4ce71321"))
