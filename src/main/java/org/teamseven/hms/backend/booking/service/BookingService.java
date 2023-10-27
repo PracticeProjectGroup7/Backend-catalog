@@ -144,6 +144,7 @@ public class BookingService {
                         .doctorName(serviceOverview.getName())
                         .department(serviceOverview.getDescription())
                         .comments(appointment.getDiagnosis())
+                        .appointmentStatus(appointment.getStatus().toString())
                         .appointmentId(appointment.getAppointmentId().toString())
                         .build();
             }
