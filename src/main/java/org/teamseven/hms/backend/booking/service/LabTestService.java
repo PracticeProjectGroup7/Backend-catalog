@@ -11,7 +11,7 @@ import java.util.UUID;
 public class LabTestService {
     @Autowired private TestRepository testRepository;
 
-    public boolean updateTestStatus(UUID testId, TestStatus newStatus) {
-        return testRepository.setTestStatus(newStatus, testId) == 1;
+    public boolean updateTestStatus(UUID testId, String result, TestStatus newStatus) {
+        return testRepository.setTestStatus(newStatus, result,  testId) == 1;
     }
 }

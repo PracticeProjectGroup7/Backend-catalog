@@ -12,8 +12,9 @@ public interface TestRepository extends CrudRepository<Test, UUID> {
     @Modifying(clearAutomatically = true)
     @Query(
             "update Test t set " +
-                    "t.status = :status " +
+                    "t.status = :status, " +
+                    "t.testReport = :result " +
                     "where t.testId = :testId"
     )
-    int setTestStatus(TestStatus status, UUID testId);
+    int setTestStatus(TestStatus status, String result, UUID testId);
 }

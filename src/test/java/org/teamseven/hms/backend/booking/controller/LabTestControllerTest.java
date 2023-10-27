@@ -14,7 +14,10 @@ import org.teamseven.hms.backend.booking.dto.UpdateLabTestRequest;
 import org.teamseven.hms.backend.booking.entity.TestStatus;
 import org.teamseven.hms.backend.booking.service.LabTestService;
 
+import java.util.UUID;
+
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -38,27 +41,35 @@ public class LabTestControllerTest {
 
     @Test
     public void testUpdateTestStatus_successfulUpdate_assertReturn204() throws Exception{
-        UpdateLabTestRequest request = new UpdateLabTestRequest(TestStatus.PENDING);
+        UpdateLabTestRequest request = new UpdateLabTestRequest(TestStatus.PENDING, "test result");
 
-        when(service.updateTestStatus(any(), any())).thenReturn(true);
+        when(service.updateTestStatus(any(), any(), any())).thenReturn(true);
 
         mockMvc.perform(
                 patch("/api/v1/tests/07fec0a8-7145-11ee-8684-0242ac130003")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(request))
         ).andExpect(status().isNoContent());
+
+        verify(service).updateTestStatus(
+                UUID.fromString("07fec0a8-7145-11ee-8684-0242ac130003"), "test result", TestStatus.PENDING
+        );
     }
 
     @Test
     public void testUpdateAppointment_unsuccessfulUpdate_assertReturn304() throws Exception{
-        UpdateLabTestRequest request = new UpdateLabTestRequest(TestStatus.PENDING);
+        UpdateLabTestRequest request = new UpdateLabTestRequest(TestStatus.PENDING, "test result");
 
-        when(service.updateTestStatus(any(), any())).thenReturn(false);
+        when(service.updateTestStatus(any(), any(), any())).thenReturn(false);
 
         mockMvc.perform(
                 patch("/api/v1/tests/07fec0a8-7145-11ee-8684-0242ac130003")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(request))
         ).andExpect(status().isNotModified());
+
+        verify(service).updateTestStatus(
+                UUID.fromString("07fec0a8-7145-11ee-8684-0242ac130003"), "test result", TestStatus.PENDING
+        );
     }
 }
