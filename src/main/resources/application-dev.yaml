@@ -10,13 +10,13 @@ spring:
   datasource:
     url: jdbc:mysql://heal-db.c8cer7bgfoe7.ap-southeast-1.rds.amazonaws.com/healdb
     driverClassName: com.mysql.cj.jdbc.Driver
-    username: healmaster
-    password: healgroup7
+    username: {{secrets}}
+    password: {{secrets}}
 
   flyway:
     url: jdbc:mysql://heal-db.c8cer7bgfoe7.ap-southeast-1.rds.amazonaws.com/healdb
-    user: healmaster
-    password: healgroup7
+    user: {{secrets}}
+    password: {{secrets}}
     baselineOnMigrate: true
 
 secEnvConf:
