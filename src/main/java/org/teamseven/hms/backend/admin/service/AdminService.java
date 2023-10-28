@@ -13,7 +13,7 @@ public class AdminService {
     @Autowired private BookingRepository bookingRepository;
 
     @Transactional
-    public int modifyBooking(ModifyBookingRequest modifyBookingRequest) {
+    public boolean modifyBooking(ModifyBookingRequest modifyBookingRequest) {
         Optional<Booking> existingBooking = bookingRepository
                 .findByServiceIdAndReservedDateAndSlot(
                         modifyBookingRequest.getServiceId(),
@@ -30,6 +30,6 @@ public class AdminService {
                         modifyBookingRequest.getServiceId(),
                         modifyBookingRequest.getReservedDate(),
                         modifyBookingRequest.getNewSlot()
-                );
+                ) == 1;
     }
 }
