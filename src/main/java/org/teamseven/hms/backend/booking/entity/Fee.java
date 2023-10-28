@@ -28,6 +28,8 @@ public class Fee {
     @GeneratedValue
     private UUID feeId;
 
+    private UUID booking_id;
+
     @NotNull
     @Enumerated(EnumType.STRING)
     private FeeType type;
