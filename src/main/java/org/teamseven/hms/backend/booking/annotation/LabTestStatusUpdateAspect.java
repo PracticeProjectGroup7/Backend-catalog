@@ -14,18 +14,16 @@ import org.teamseven.hms.backend.config.JwtService;
 import org.teamseven.hms.backend.shared.exception.UnauthorizedAccessException;
 import org.teamseven.hms.backend.user.Role;
 
-import java.util.logging.Logger;
-
 @Aspect
 @Component
 public class LabTestStatusUpdateAspect {
     @Autowired private JwtService jwtService;
 
     @VisibleForTesting
-    @Around("@annotation(labTestUpdateAccessValidated)")
+    @Around("@annotation(labTestEndpointAccessValidated)")
     protected Object validateAccessAllowed(
             ProceedingJoinPoint pjp,
-            LabTestStatusUpdateAccessValidated labTestUpdateAccessValidated
+            LabTestEndpointAccessValidated labTestEndpointAccessValidated
     ) throws Throwable {
         HttpServletRequest request = (
                 (ServletRequestAttributes) RequestContextHolder.currentRequestAttributes()

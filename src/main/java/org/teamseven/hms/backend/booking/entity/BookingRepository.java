@@ -60,6 +60,18 @@ public interface BookingRepository extends CrudRepository<Booking, UUID> {
 
     @Query(
             value = "SELECT * " +
+                    "from bookings where test_id IS NOT NULL " +
+                    "AND reserved_date >= :reservedDate " +
+                    "ORDER BY reserved_date, created_at",
+            nativeQuery=true
+    )
+    Page<Booking> findUpcomingTestBookings(
+            String reservedDate,
+            Pageable pageable
+    );
+
+    @Query(
+            value = "SELECT * " +
                     "from bookings where service_id = UUID_TO_BIN(:serviceId) " +
                     "AND reserved_date >= :reservedDate " +
                     "ORDER BY reserved_date, created_at",
