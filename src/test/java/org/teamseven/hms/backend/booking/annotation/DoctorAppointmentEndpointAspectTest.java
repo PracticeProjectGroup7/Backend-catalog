@@ -30,12 +30,12 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
-public class AppointmentUpdateAspectTest {
+public class DoctorAppointmentEndpointAspectTest {
     @Mock
     private JwtService jwtService;
 
     @InjectMocks
-    AppointmentUpdateAccessAspect aspect;
+    DoctorAppointmentEndpointAccessAspect aspect;
 
     @BeforeEach
     public void setUp() {
@@ -45,7 +45,7 @@ public class AppointmentUpdateAspectTest {
     @Test
     public void testValidateAccessAllowed_userIsDoctor_assertNotThrowUnauthorized() {
         ProceedingJoinPoint proceedingJoinPoint = mock();
-        AppointmentUpdateAccessValidated mockAnnotation = mock();
+        DoctorAppointmentEndpointAccessValidated mockAnnotation = mock();
         MockHttpServletRequest request = new MockHttpServletRequest();
         RequestContextHolder.setRequestAttributes(new ServletRequestAttributes(request));
         request.addHeader("Authorization", "Bearer mock token");
@@ -63,7 +63,7 @@ public class AppointmentUpdateAspectTest {
     @Test
     public void testValidateAccessAllowed_userIsNotDoctor_assertThrowUnauthorized() {
         ProceedingJoinPoint proceedingJoinPoint = mock();
-        AppointmentUpdateAccessValidated mockAnnotation = mock();
+        DoctorAppointmentEndpointAccessValidated mockAnnotation = mock();
         MockHttpServletRequest request = new MockHttpServletRequest();
         RequestContextHolder.setRequestAttributes(new ServletRequestAttributes(request));
         request.addHeader("Authorization", "Bearer mock token");

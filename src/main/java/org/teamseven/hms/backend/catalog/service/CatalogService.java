@@ -107,4 +107,11 @@ public class CatalogService {
             .specialty(profile.getSpecialty())
             .yearsOfExperience(profile.getYearOfExperience())
             .type(ServiceType.APPOINTMENT).build();
+
+    public ServiceOverview getServiceOverviewByDoctorId(UUID doctorId) {
+        org.teamseven.hms.backend.catalog.entity.Service service = repository.findByDoctorId(doctorId)
+                .orElseThrow(NoSuchElementException::new);
+
+        return getOverview.apply(service);
+    }
 }

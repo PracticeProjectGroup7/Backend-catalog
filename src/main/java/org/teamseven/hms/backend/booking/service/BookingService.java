@@ -14,6 +14,7 @@ import org.teamseven.hms.backend.user.entity.Patient;
 import org.teamseven.hms.backend.user.entity.PatientRepository;
 import org.teamseven.hms.backend.user.service.PatientService;
 
+import java.time.LocalDate;
 import java.math.BigDecimal;
 import java.util.*;
 import java.util.function.BiFunction;
@@ -230,5 +231,13 @@ public class BookingService {
     private boolean bookingExists(String date, String slot) {
         Optional<Booking> booking = bookingRepository.findByAppointmentDate(date, slot);
         return booking.isPresent();
+    }
+
+    public Page<Booking> findUpcomingServiceBookings(UUID serviceId, Pageable pageable) {
+        return bookingRepository.findUpcomingServiceBookings(
+                serviceId.toString(),
+                LocalDate.now().toString(),
+                pageable
+        );
     }
 }

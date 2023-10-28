@@ -10,12 +10,19 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
+import org.teamseven.hms.backend.booking.dto.AppointmentBookingSlotItem;
+import org.teamseven.hms.backend.booking.dto.AppointmentBookingSlotPaginationResponse;
 import org.teamseven.hms.backend.booking.dto.UpdateAppointmentRequest;
 import org.teamseven.hms.backend.booking.entity.AppointmentStatus;
 import org.teamseven.hms.backend.booking.service.AppointmentService;
 
+import java.util.List;
+import java.util.UUID;
+
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.Mockito.when;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -66,5 +73,32 @@ public class AppointmentControllerTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(request))
         ).andExpect(status().isNotModified());
+    }
+
+    @Test
+    public void testGetAppointmentSlots_assertReturnList_andReturn200() throws Exception{
+        AppointmentBookingSlotPaginationResponse mockResponse = AppointmentBookingSlotPaginationResponse
+                .builder()
+                .items(
+                        List.of(
+                                AppointmentBookingSlotItem.builder()
+                                        .bookingId(UUID.randomUUID())
+                                        .patientName("Jane Doe")
+                                        .status(AppointmentStatus.COMPLETED)
+                                        .reservedDate("2023-10-10")
+                                        .build()
+                        )
+                )
+                .totalElements(1)
+                .currentPage(1)
+                .build();
+
+        when(service.getDoctorSlots(any(), anyInt(), anyInt())).thenReturn(mockResponse);
+
+        mockMvc.perform(
+                get("/api/v1/appointments")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(mockResponse))
+        ).andExpect(status().isOk());
     }
 }

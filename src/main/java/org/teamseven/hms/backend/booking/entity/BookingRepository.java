@@ -57,4 +57,17 @@ public interface BookingRepository extends CrudRepository<Booking, UUID> {
     @Modifying(clearAutomatically = true)
     @Query(value = "update bookings set bill_status = :billStatus, paid_at = :paidAt where booking_id = UUID_TO_BIN(:bookingId)", nativeQuery = true)
     int updateBillStatus(String billStatus, String paidAt, String bookingId);
+
+    @Query(
+            value = "SELECT * " +
+                    "from bookings where service_id = UUID_TO_BIN(:serviceId) " +
+                    "AND reserved_date >= :reservedDate " +
+                    "ORDER BY reserved_date, created_at",
+            nativeQuery=true
+    )
+    Page<Booking> findUpcomingServiceBookings(
+            String serviceId,
+            String reservedDate,
+            Pageable pageable
+    );
 }
