@@ -26,18 +26,17 @@ public interface BookingRepository extends CrudRepository<Booking, UUID> {
     @Query(
             value = "select * " +
                     "from bookings b where b.reserved_date = :appointmentDate and b.slots = :slot " +
-                    "and b.test_id is null",
+                    "and b.service_id = UUID_TO_BIN(:serviceId)",
             nativeQuery=true
     )
-    Optional<Booking> findByAppointmentDate(String appointmentDate, String slot);
+    Optional<Booking> findByAppointmentDate(String appointmentDate, String slot, String serviceId);
 
     @Query(
             value = "select * " +
-                    "from bookings b where b.reserved_date = :appointmentDate and b.patient_id = UUID_TO_BIN(:patientId)" +
-                    "and b.test_id is not null",
+                    "from bookings b where b.reserved_date = :appointmentDate and b.service_id = UUID_TO_BIN(:serviceId)",
             nativeQuery=true
     )
-    Optional<Booking> checkTestExists(String appointmentDate, String patientId);
+    Optional<Booking> checkTestExists(String appointmentDate, String serviceId);
 
     @Query(
             value = "SELECT * from bookings where booking_id = UUID_TO_BIN(:bookingId) ",
@@ -51,8 +50,13 @@ public interface BookingRepository extends CrudRepository<Booking, UUID> {
     Optional<Booking> findByServiceIdAndReservedDateAndSlot(String serviceId, String reservedDate, String slot);
 
     @Modifying(clearAutomatically = true)
-    @Query(value = "update bookings set reserved_date = :reservedDate, slots = :slot where patient_id = UUID_TO_BIN(:patientId) and service_id = UUID_TO_BIN(:serviceId)", nativeQuery = true)
-    int updateBooking(String patientId, String serviceId, String reservedDate, String slot);
+    @Query(value = "update bookings set reserved_date = :newReservedDate, slots = :newSlot where patient_id = UUID_TO_BIN(:patientId) and service_id = UUID_TO_BIN(:serviceId) and slots = :oldSlot and reserved_date = :oldReservedDate", nativeQuery = true)
+    int updateBooking(String patientId, String serviceId, String oldReservedDate, String oldSlot, String newReservedDate, String newSlot);
+
+    @Modifying(clearAutomatically = true)
+    @Query(value = "update bookings set reserved_date = :newReservedDate where patient_id = UUID_TO_BIN(:patientId) and service_id = UUID_TO_BIN(:serviceId) and reserved_date = :oldReservedDate and test_id is not null", nativeQuery = true)
+    int updateTest(String patientId, String serviceId, String oldReservedDate, String newReservedDate);
+
 
     @Modifying(clearAutomatically = true)
     @Query(value = "update bookings set bill_status = :billStatus, paid_at = :paidAt where booking_id = UUID_TO_BIN(:bookingId)", nativeQuery = true)
