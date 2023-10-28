@@ -9,11 +9,9 @@ import lombok.NoArgsConstructor;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class ModifyBookingRequest {
+public class ModifyTestRequest {
     private String patientId;
     private String serviceId;
     private String oldReservedDate;
     private String newReservedDate;
-    private String oldSlot;
-    private String newSlot;
 }

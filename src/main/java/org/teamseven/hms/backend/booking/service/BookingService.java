@@ -162,7 +162,7 @@ public class BookingService {
         ServiceOverview serviceOverview = catalogService.getServiceOverview(bookingRequest.getServiceId());
         Booking booked = new Booking();
         if (Objects.equals(bookingRequest.getType(), BookingType.APPOINTMENT)) {
-            if(bookingExists(bookingRequest.getAppointmentDate(), bookingRequest.getSelectedSlot())) {
+            if(bookingExists(bookingRequest.getAppointmentDate(), bookingRequest.getSelectedSlot(), bookingRequest.getServiceId())) {
                 throw new IllegalStateException("Appointment already exists!");
             }
             var appointment = Appointment.builder()
@@ -172,7 +172,7 @@ public class BookingService {
             appointmentRepository.save(appointment);
             booked = book(bookingRequest, appointment.getAppointmentId(), bookingRequest.getServiceId());
         } else if (Objects.equals(bookingRequest.getType(), BookingType.TEST)) {
-            if(testExists(bookingRequest.getAppointmentDate(), bookingRequest.getPatientId())) {
+            if(testExists(bookingRequest.getAppointmentDate(), bookingRequest.getServiceId())) {
                 throw new IllegalStateException("Test already exists!");
             }
             var test = Test.builder()
@@ -188,8 +188,8 @@ public class BookingService {
         return booked;
     }
 
-    private boolean testExists(String date, UUID patientId) {
-        Optional<Booking> booking = bookingRepository.checkTestExists(date, String.valueOf(patientId));
+    private boolean testExists(String date, UUID serviceId) {
+        Optional<Booking> booking = bookingRepository.checkTestExists(date, String.valueOf(serviceId));
         return booking.isPresent();
     }
 
@@ -230,8 +230,8 @@ public class BookingService {
         return savedBooking;
     }
 
-    private boolean bookingExists(String date, String slot) {
-        Optional<Booking> booking = bookingRepository.findByAppointmentDate(date, slot);
+    private boolean bookingExists(String date, String slot, UUID serviceId) {
+        Optional<Booking> booking = bookingRepository.findByAppointmentDate(date, slot, String.valueOf(serviceId));
         return booking.isPresent();
     }
 
