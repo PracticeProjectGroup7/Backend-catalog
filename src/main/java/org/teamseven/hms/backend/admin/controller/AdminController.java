@@ -6,6 +6,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.teamseven.hms.backend.admin.dto.ModifyBookingRequest;
 import org.teamseven.hms.backend.admin.service.AdminService;
+import org.teamseven.hms.backend.bill.dto.UpdateBillRequest;
+import org.teamseven.hms.backend.bill.service.BillService;
 import org.teamseven.hms.backend.shared.ResponseWrapper;
 
 @RestController
@@ -13,11 +15,26 @@ import org.teamseven.hms.backend.shared.ResponseWrapper;
 @RequiredArgsConstructor
 public class AdminController {
     @Autowired private AdminService adminService;
+    @Autowired private BillService billService;
 
     @PatchMapping("/modify-booking")
     public ResponseEntity<ResponseWrapper> modifyBooking(
             @RequestBody ModifyBookingRequest modifyBookingRequest
     ) {
         return ResponseEntity.ok(new ResponseWrapper.Success<>(adminService.modifyBooking(modifyBookingRequest)));
+    }
+
+    @GetMapping("/bills")
+    public ResponseEntity<ResponseWrapper> getBillByBookingId(
+            @PathVariable String booking_id
+    ) {
+        return ResponseEntity.ok(new ResponseWrapper.Success<>(billService.getBillByBookingId(booking_id)));
+    }
+
+    @PatchMapping("/bills")
+    public ResponseEntity<ResponseWrapper> updateBillStatus(
+            @RequestBody UpdateBillRequest updateBillRequest
+    ) {
+        return ResponseEntity.ok(new ResponseWrapper.Success<>(billService.updateBill(updateBillRequest)));
     }
 }
