@@ -1,15 +1,34 @@
 package org.teamseven.hms.backend.booking.service;
 
+import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.teamseven.hms.backend.booking.dto.AppointmentBookingSlotItem;
+import org.teamseven.hms.backend.booking.dto.AppointmentBookingSlotPaginationResponse;
 import org.teamseven.hms.backend.booking.dto.UpdateAppointmentRequest;
 import org.teamseven.hms.backend.booking.entity.AppointmentRepository;
-
+import org.teamseven.hms.backend.booking.entity.Booking;
+import org.teamseven.hms.backend.catalog.dto.ServiceOverview;
+import org.teamseven.hms.backend.catalog.service.CatalogService;
+import org.teamseven.hms.backend.user.dto.PatientProfileOverview;
+import org.teamseven.hms.backend.user.service.PatientService;
+import java.util.List;
+import java.util.Map;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 @Service
 public class AppointmentService {
     @Autowired private AppointmentRepository repository;
+
+    @Autowired private PatientService patientService;
+
+    @Autowired private BookingService bookingService;
+
+    @Autowired private CatalogService catalogService;
 
     public boolean updateAppointmentDetails(
             UUID appointmentId,
@@ -20,5 +39,39 @@ public class AppointmentService {
                 appointmentRequest.getComments(),
                 appointmentId
         ) == 1;
+    }
+
+    public AppointmentBookingSlotPaginationResponse getDoctorSlots(
+            HttpServletRequest request,
+            @RequestParam(defaultValue = "1") int page,
+            @RequestParam(defaultValue = "10") int pageSize
+    ) {
+        UUID doctorId = UUID.fromString(request.getAttribute("roleId").toString());
+        ServiceOverview overview = catalogService.getServiceOverviewByDoctorId(doctorId);
+        int zeroBasedIdxPage = page - 1;
+
+        Page<Booking> bookingPage = bookingService.findUpcomingServiceBookings(
+                overview.getServiceId(),
+                Pageable.ofSize(pageSize).withPage(zeroBasedIdxPage)
+        );
+
+        List<UUID> patientIdList = bookingPage.getContent().stream().map(Booking::getPatientId).toList();
+
+        Map<UUID, PatientProfileOverview> patientProfiles = patientService.getByUUIDs(
+                patientIdList
+        ).stream().collect(Collectors.toMap(PatientProfileOverview::getPatientId, item -> item));
+
+        return AppointmentBookingSlotPaginationResponse
+                .builder()
+                .currentPage(page)
+                .totalElements(bookingPage.getTotalElements())
+                .items(bookingPage.stream().map(it ->
+                        AppointmentBookingSlotItem.builder()
+                                .bookingId(it.getBookingId())
+                                .patientName(patientProfiles.get(it.getPatientId()).getPatientName())
+                                .status(it.getAppointment().getStatus())
+                                .reservedDate(it.getReservedDate())
+                                .build()
+                ).toList()).build();
     }
 }

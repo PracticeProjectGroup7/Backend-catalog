@@ -6,6 +6,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.data.repository.query.Param;
 
+import java.util.Optional;
 import java.util.UUID;
 
 public interface ServiceRepository extends CrudRepository<Service, UUID> {
@@ -20,4 +21,6 @@ public interface ServiceRepository extends CrudRepository<Service, UUID> {
             @Param("serviceType") String serviceType,
             Pageable pageable
     );
+
+    Optional<Service> findByDoctorId(UUID doctorId);
 }

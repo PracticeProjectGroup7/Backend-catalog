@@ -16,15 +16,15 @@ import org.teamseven.hms.backend.user.Role;
 
 @Aspect
 @Component
-public class AppointmentUpdateAccessAspect {
+public class DoctorAppointmentEndpointAccessAspect {
     @Autowired
     private JwtService jwtService;
 
     @VisibleForTesting
-    @Around("@annotation(appointmentUpdateAccessValidated)")
+    @Around("@annotation(doctorAppointmentEndpointAccessValidated)")
     protected Object validateAccessAllowed(
             ProceedingJoinPoint pjp,
-            AppointmentUpdateAccessValidated appointmentUpdateAccessValidated
+            DoctorAppointmentEndpointAccessValidated doctorAppointmentEndpointAccessValidated
     ) throws Throwable{
         HttpServletRequest request = (
                 (ServletRequestAttributes) RequestContextHolder.currentRequestAttributes()
