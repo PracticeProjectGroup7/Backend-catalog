@@ -14,6 +14,7 @@ import org.teamseven.hms.backend.user.entity.Patient;
 import org.teamseven.hms.backend.user.entity.PatientRepository;
 import org.teamseven.hms.backend.user.service.PatientService;
 
+import java.math.BigDecimal;
 import java.util.*;
 import java.util.function.BiFunction;
 import java.util.function.Function;
@@ -38,6 +39,8 @@ public class BookingService {
     @Autowired private AppointmentRepository appointmentRepository;
 
     @Autowired private TestRepository testRepository;
+
+    @Autowired private FeeRepository feeRepository;
 
     public BookingPaginationResponse getBookingHistory(
             UUID patientId,
@@ -206,7 +209,22 @@ public class BookingService {
                 .reservedDate(bookingRequest.getAppointmentDate())
                 .isActive(true)
                 .build();
-        return bookingRepository.save(booking);
+        var savedBooking =  bookingRepository.save(booking);
+        var platformFee = Fee.builder()
+                .booking_id(savedBooking.getBookingId())
+                .type(FeeType.PLATFORM)
+                .price(BigDecimal.valueOf(10))
+                .isActive(true)
+                .build();
+        var serviceFee = Fee.builder()
+                .booking_id(savedBooking.getBookingId())
+                .type(FeeType.SERVICE)
+                .price(BigDecimal.valueOf(5))
+                .isActive(true)
+                .build();
+        feeRepository.save(platformFee);
+        feeRepository.save(serviceFee);
+        return savedBooking;
     }
 
     private boolean bookingExists(String date, String slot) {
