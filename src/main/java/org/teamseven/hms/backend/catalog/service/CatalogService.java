@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.teamseven.hms.backend.catalog.dto.CreateDoctorService;
 import org.teamseven.hms.backend.catalog.dto.ServiceCatalogItem;
 import org.teamseven.hms.backend.catalog.dto.ServiceCatalogPaginationResponse;
 import org.teamseven.hms.backend.catalog.dto.ServiceOverview;
@@ -92,6 +93,17 @@ public class CatalogService {
         return services.map(
                 it -> getAppointmentCatalogItem.apply(it, doctorProfiles.get(it.getDoctorId()))
         ).toList();
+    }
+
+    public UUID createNewService(CreateDoctorService newService) {
+        org.teamseven.hms.backend.catalog.entity.Service service = org.teamseven.hms.backend.catalog.entity.Service.builder()
+                .doctorId(newService.getDoctorId())
+                .type(ServiceType.APPOINTMENT.name())
+                .name(newService.getName())
+                .description(newService.getDescription())
+                .estimatedPrice(newService.getEstimatedPrice())
+                .build();
+        return repository.save(service).getServiceId();
     }
 
     private final BiFunction<

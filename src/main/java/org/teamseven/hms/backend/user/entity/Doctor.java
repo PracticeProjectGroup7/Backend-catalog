@@ -28,7 +28,7 @@ public class Doctor {
     private UUID doctorId;
 
     @Column(name = "userid")
-    private String userId;
+    private UUID userId;
 
     private String speciality;
 
@@ -38,7 +38,6 @@ public class Doctor {
     @Column(name = "yearsofexp")
     private Integer yearsOfExperience;
 
-    @NotNull
     @Column(insertable=false)
     private Integer isActive = 1;
 
