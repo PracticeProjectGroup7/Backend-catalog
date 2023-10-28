@@ -30,7 +30,7 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
-public class LabTestStatusUpdateAccessAspectTest {
+public class LabTestEndpointAccessAspectTest {
     @Mock
     private JwtService jwtService;
 
@@ -45,7 +45,7 @@ public class LabTestStatusUpdateAccessAspectTest {
     @Test
     public void testValidateAccessAllowed_userIsLabSupportStaff_assertNotThrowUnauthorized() {
         ProceedingJoinPoint proceedingJoinPoint = mock();
-        LabTestStatusUpdateAccessValidated mockAnnotation = mock();
+        LabTestEndpointAccessValidated mockAnnotation = mock();
         MockHttpServletRequest request = new MockHttpServletRequest();
         RequestContextHolder.setRequestAttributes(new ServletRequestAttributes(request));
         request.addHeader("Authorization", "Bearer mock token");
@@ -63,7 +63,7 @@ public class LabTestStatusUpdateAccessAspectTest {
     @Test
     public void testValidateAccessAllowed_userIsNotLabStaff_assertThrowUnauthorized() {
         ProceedingJoinPoint proceedingJoinPoint = mock();
-        LabTestStatusUpdateAccessValidated mockAnnotation = mock();
+        LabTestEndpointAccessValidated mockAnnotation = mock();
         MockHttpServletRequest request = new MockHttpServletRequest();
         RequestContextHolder.setRequestAttributes(new ServletRequestAttributes(request));
         request.addHeader("Authorization", "Bearer mock token");

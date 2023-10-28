@@ -159,6 +159,7 @@ public class BookingService {
 
     @Transactional
     public Booking reserveSlot(AddBookingRequest bookingRequest) {
+        ServiceOverview serviceOverview = catalogService.getServiceOverview(bookingRequest.getServiceId());
         Booking booked = new Booking();
         if (Objects.equals(bookingRequest.getType(), BookingType.APPOINTMENT)) {
             if(bookingExists(bookingRequest.getAppointmentDate(), bookingRequest.getSelectedSlot())) {
@@ -177,6 +178,7 @@ public class BookingService {
             var test = Test.builder()
                     .patientId(bookingRequest.getPatientId())
                     .testDate(bookingRequest.getAppointmentDate())
+                    .testName(serviceOverview.getName())
                     .status(TestStatus.PENDING)
                     .isActive(true)
                     .build();
@@ -231,6 +233,13 @@ public class BookingService {
     private boolean bookingExists(String date, String slot) {
         Optional<Booking> booking = bookingRepository.findByAppointmentDate(date, slot);
         return booking.isPresent();
+    }
+
+    public Page<Booking> findUpcomingTestBookings(Pageable pageable) {
+        return bookingRepository.findUpcomingTestBookings(
+                LocalDate.now().toString(),
+                pageable
+        );
     }
 
     public Page<Booking> findUpcomingServiceBookings(UUID serviceId, Pageable pageable) {
