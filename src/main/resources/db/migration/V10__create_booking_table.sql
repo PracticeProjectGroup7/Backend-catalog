@@ -1,0 +1,23 @@
+CREATE TABLE bookings(
+    booking_id binary(16) PRIMARY KEY DEFAULT (UUID_TO_BIN(UUID())),
+    appointment_id binary(16),
+    test_id binary(16),
+    service_id binary(16) NOT NULL,
+    patient_id binary(16) NOT NULL,
+    bill_number SERIAL NOT NULL,
+    bill_status varchar(16),
+    amount_paid decimal(10,2),
+    paid_at datetime,
+    gst int NOT NULL,
+    slots TEXT NOT NULL,
+    reserved_date DATE NOT NULL,
+    is_active bit NOT NULL,
+    created_at datetime DEFAULT CURRENT_TIMESTAMP,
+    modified_at datetime ON UPDATE CURRENT_TIMESTAMP,
+    FOREIGN KEY (appointment_id) REFERENCES appointments(appointment_id) ON DELETE CASCADE,
+    FOREIGN KEY (test_id) REFERENCES tests(test_id) ON DELETE CASCADE,
+    FOREIGN KEY (patient_id) REFERENCES patient(patientid) ON DELETE CASCADE,
+    FOREIGN KEY (service_id) REFERENCES services(servicesid) ON DELETE CASCADE,
+    INDEX idx_bookings_patient_id (patient_id),
+    INDEX idx_bookings_service_reserved_date (service_id, reserved_date)
+);
