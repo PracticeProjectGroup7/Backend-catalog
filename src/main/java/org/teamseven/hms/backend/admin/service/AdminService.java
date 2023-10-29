@@ -2,16 +2,26 @@ package org.teamseven.hms.backend.admin.service;
 
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.teamseven.hms.backend.admin.dto.ModifyBookingRequest;
 import org.teamseven.hms.backend.admin.dto.ModifyTestRequest;
+import org.teamseven.hms.backend.admin.dto.RetrievePatientItem;
+import org.teamseven.hms.backend.admin.dto.RetrievePatientsPaginationResponse;
 import org.teamseven.hms.backend.booking.entity.Booking;
 import org.teamseven.hms.backend.booking.entity.BookingRepository;
+import org.teamseven.hms.backend.user.entity.Patient;
+import org.teamseven.hms.backend.user.entity.PatientRepository;
+
 import java.util.Optional;
 
 @Service
 public class AdminService {
     @Autowired private BookingRepository bookingRepository;
+
+    @Autowired private PatientRepository patientRepository;
 
     @Transactional
     public boolean modifyBooking(ModifyBookingRequest modifyBookingRequest) {
@@ -54,5 +64,26 @@ public class AdminService {
                         modifyTestRequest.getOldReservedDate(),
                         modifyTestRequest.getNewReservedDate()
                 ) == 1;
+    }
+
+    public RetrievePatientsPaginationResponse getAllPatients(
+            @RequestParam(defaultValue = "1") int page,
+            @RequestParam(defaultValue = "10") int pageSize
+    ) {
+        int zeroBasedIndexPage = page - 1;
+        Page<Patient> patientList = patientRepository.getPatients(Pageable.ofSize(pageSize).withPage(zeroBasedIndexPage));
+        return RetrievePatientsPaginationResponse.builder()
+                .currentPage(page)
+                .totalElements(patientList.getTotalElements())
+                .items(patientList.stream().map(it ->
+                                RetrievePatientItem.builder()
+                                        .userId(it.getUser().getUserId())
+                                        .patientId(it.getPatientId())
+                                        .firstname(it.getUser().getFirstName())
+                                        .lastName(it.getUser().getLastName())
+                                        .email(it.getUser().getEmail())
+                                        .build()
+                        ).toList())
+                .build();
     }
 }

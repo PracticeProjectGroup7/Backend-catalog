@@ -1,5 +1,7 @@
 package org.teamseven.hms.backend.user.entity;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
 import org.teamseven.hms.backend.user.User;
@@ -19,4 +21,9 @@ public interface PatientRepository extends CrudRepository<Patient, UUID> {
             value = "select * from Patient where patientid = UUID_TO_BIN(:patientId)",
             nativeQuery = true)
     Optional<Patient> findByPatientId(String patientId);
+
+    @Query(
+            value = "select p from Patient p"
+    )
+    Page<Patient> getPatients(Pageable pageable);
 }
