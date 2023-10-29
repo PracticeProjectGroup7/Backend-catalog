@@ -71,7 +71,7 @@ public class CatalogServiceTest {
 
         assertEquals(uuid, overview.getServiceId());
         assertEquals(mockServiceObject.getStaffid(), overview.getStaffId());
-        assertEquals(mockServiceObject.getDoctorid(), overview.getDoctorId());
+        assertEquals(mockServiceObject.getDoctorid(), overview.getDoctorId().toString());
         assertEquals(mockServiceObject.getType(), overview.getType());
         assertEquals(mockServiceObject.getName(), overview.getName());
         assertEquals(mockServiceObject.getDescription(), overview.getDescription());
