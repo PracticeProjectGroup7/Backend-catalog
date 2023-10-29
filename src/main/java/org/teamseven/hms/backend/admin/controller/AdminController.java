@@ -45,4 +45,12 @@ public class AdminController {
     ) {
         return ResponseEntity.ok(new ResponseWrapper.Success<>(adminService.modifyTest(modifyTestRequest)));
     }
+
+    @GetMapping("/patients")
+    public ResponseEntity<ResponseWrapper> getAllPatients(
+            @RequestParam(defaultValue = "1") int page,
+            @RequestParam(defaultValue = "10") int pageSize
+    ) {
+        return ResponseEntity.ok(new ResponseWrapper.Success<>(adminService.getAllPatients(page, pageSize)));
+    }
 }
