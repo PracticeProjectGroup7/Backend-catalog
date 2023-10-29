@@ -27,7 +27,8 @@ jobs:
         cache: maven
 
     - name: Create jar file
-      run: ./mvnw package
+      run: chmod +x mvnw
+           ./mvnw package
     
     - name: Configure AWS credentials
       uses: aws-actions/configure-aws-credentials@v4
