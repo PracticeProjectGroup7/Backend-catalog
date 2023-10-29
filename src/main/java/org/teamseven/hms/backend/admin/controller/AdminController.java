@@ -2,6 +2,7 @@ package org.teamseven.hms.backend.admin.controller;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.teamseven.hms.backend.admin.dto.ModifyBookingRequest;
@@ -10,6 +11,7 @@ import org.teamseven.hms.backend.admin.service.AdminService;
 import org.teamseven.hms.backend.bill.dto.UpdateBillRequest;
 import org.teamseven.hms.backend.bill.service.BillService;
 import org.teamseven.hms.backend.shared.ResponseWrapper;
+import org.teamseven.hms.backend.user.dto.CreateHospitalAccountRequest;
 
 @RestController
 @RequestMapping("/api/v1/admin")
@@ -44,6 +46,14 @@ public class AdminController {
             @RequestBody ModifyTestRequest modifyTestRequest
     ) {
         return ResponseEntity.ok(new ResponseWrapper.Success<>(adminService.modifyTest(modifyTestRequest)));
+    }
+
+    @PostMapping("/hospital-staff")
+    public ResponseEntity<ResponseWrapper> createHospitalStaffAccount(
+            @RequestBody CreateHospitalAccountRequest request
+    ) {
+        return ResponseEntity.status(HttpStatus.CREATED)
+                .body(new ResponseWrapper.Success(adminService.createStaffAccount(request)));
     }
 
     @GetMapping("/patients")
