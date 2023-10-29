@@ -11,14 +11,26 @@ services:
       - 3306:3306
     volumes:
       - db:/var/lib/mysql
-  backend:
-    depends_on:
-      - mysqldb
-    build: ./
-    restart: on-failure
+  mongodb:
+    image: mongo:5.0.22
+    environment:
+      - MONGO_INITDB_ROOT_USERNAME=user
+      - MONGO_INITDB_ROOT_PASSWORD=pass
+      - MONGO_INITDB_DATABASE=healdb
     ports:
-      - 8080:8080
-    stdin_open: true
-    tty: true
+      - 27017:27017
+    volumes:
+      - ./docker-entrypoint-initdb.d/mongo-init.js:/docker-entrypoint-initdb.d/mongo-init.js:ro
+      - mongodb:/data/db
+#  backend:
+#    depends_on:
+#      - mysqldb
+#    build: ./
+#    restart: on-failure
+#    ports:
+#      - 8080:8080
+#    stdin_open: true
+#    tty: true
 volumes:
   db:
+  mongodb:

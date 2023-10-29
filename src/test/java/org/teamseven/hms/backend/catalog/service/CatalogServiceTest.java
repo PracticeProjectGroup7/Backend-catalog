@@ -47,16 +47,16 @@ public class CatalogServiceTest {
                 () -> catalogService.getServiceOverview(uuid)
         );
 
-        verify(serviceRepository).findById(uuid);
+        verify(serviceRepository).findById(uuid.toString());
     }
 
     @Test
     public void testGetServiceOverview_serviceFound_assertReturnElement() {
         UUID uuid = UUID.randomUUID();
         Service mockServiceObject = Service.builder()
-                .serviceId(uuid)
+                .serviceid(uuid.toString())
                 .staffid(UUID.randomUUID())
-                .doctorId(UUID.randomUUID())
+                .doctorid(UUID.randomUUID().toString())
                 .type("TEST")
                 .name("Lab test")
                 .description("full blood scan test")
@@ -67,11 +67,11 @@ public class CatalogServiceTest {
 
         ServiceOverview overview = catalogService.getServiceOverview(uuid);
 
-        verify(serviceRepository).findById(uuid);
+        verify(serviceRepository).findById(uuid.toString());
 
         assertEquals(uuid, overview.getServiceId());
         assertEquals(mockServiceObject.getStaffid(), overview.getStaffId());
-        assertEquals(mockServiceObject.getDoctorId(), overview.getDoctorId());
+        assertEquals(mockServiceObject.getDoctorid(), overview.getDoctorId());
         assertEquals(mockServiceObject.getType(), overview.getType());
         assertEquals(mockServiceObject.getName(), overview.getName());
         assertEquals(mockServiceObject.getDescription(), overview.getDescription());
@@ -127,7 +127,7 @@ public class CatalogServiceTest {
     private List<Service> getMockTestServiceList() {
         return List.of(
                 Service.builder()
-                        .serviceId(UUID.randomUUID())
+                        .serviceid(UUID.randomUUID().toString())
                         .name("test name")
                         .description("test description")
                         .build()
@@ -137,8 +137,8 @@ public class CatalogServiceTest {
     private List<Service> getMockDoctorsServiceList() {
         return List.of(
                 Service.builder()
-                        .doctorId(UUID.fromString("7586e389-dd38-486c-937b-5fb8eab2d792"))
-                        .serviceId(UUID.randomUUID())
+                        .doctorid("7586e389-dd38-486c-937b-5fb8eab2d792")
+                        .serviceid(UUID.randomUUID().toString())
                         .name("test name")
                         .description("test description")
                         .build()
