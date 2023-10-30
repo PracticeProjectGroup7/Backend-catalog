@@ -1,7 +1,7 @@
 spring:
   data:
     mongodb:
-      uri: mongodb://user:pass@localhost:27017/healdb?authSource=admin
+      uri: mongodb://MongoECSUser:Helucipass745@ecsmongodb.cluster-cqunz6ixnkor.ap-southeast-1.docdb.amazonaws.com/healdb?authSource=admin
       uuid-representation: standard
   jpa:
     database-platform: org.hibernate.dialect.MySQL8Dialect
