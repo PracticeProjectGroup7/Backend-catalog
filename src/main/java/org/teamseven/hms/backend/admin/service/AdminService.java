@@ -98,7 +98,11 @@ public class AdminService  {
             CreateHospitalAccountRequest request
     ) {
         try {
-        return transactionTemplate.execute(status -> {
+            User userExists = userRepository.findByEmail(request.getEmail());
+            if (userExists != null) {
+                throw new IllegalArgumentException("User " + request.getEmail() + " already exists!");
+            }
+            return transactionTemplate.execute(status -> {
                 User user = User.builder()
                         .firstName(request.getFirstName())
                         .lastName(request.getLastName())
@@ -129,8 +133,8 @@ public class AdminService  {
                 }
 
                 return createdUser.getUserId();
-        });
-    } catch (Exception e) {
+            });
+        } catch (Exception e) {
             Logger.getAnonymousLogger().severe("Exception when creating account " + e);
             throw e;
         }
