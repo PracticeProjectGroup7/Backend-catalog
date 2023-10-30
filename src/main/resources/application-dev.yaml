@@ -18,3 +18,11 @@ spring:
     user: healmaster
     password: healgroup7
     baselineOnMigrate: true
+
+
+logging:
+  level:
+    org:
+      hibernate: DEBUG
+      springframework:
+        web: DEBUG
