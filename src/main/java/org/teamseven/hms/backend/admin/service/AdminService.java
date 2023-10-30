@@ -1,5 +1,6 @@
 package org.teamseven.hms.backend.admin.service;
 
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -8,10 +9,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.support.TransactionTemplate;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.teamseven.hms.backend.admin.dto.ModifyBookingRequest;
-import org.teamseven.hms.backend.admin.dto.ModifyTestRequest;
-import org.teamseven.hms.backend.admin.dto.RetrievePatientItem;
-import org.teamseven.hms.backend.admin.dto.RetrievePatientsPaginationResponse;
+import org.teamseven.hms.backend.admin.dto.*;
 import org.teamseven.hms.backend.booking.entity.Booking;
 import org.teamseven.hms.backend.booking.entity.BookingRepository;
 import org.teamseven.hms.backend.catalog.dto.CreateDoctorService;
@@ -19,20 +17,20 @@ import org.teamseven.hms.backend.catalog.service.CatalogService;
 import org.teamseven.hms.backend.user.Role;
 import org.teamseven.hms.backend.user.User;
 import org.teamseven.hms.backend.user.UserRepository;
+import org.teamseven.hms.backend.user.UserRequest;
 import org.teamseven.hms.backend.user.dto.CreateHospitalAccountRequest;
-import org.teamseven.hms.backend.user.entity.Doctor;
-import org.teamseven.hms.backend.user.entity.DoctorRepository;
+import org.teamseven.hms.backend.user.entity.*;
+import org.teamseven.hms.backend.user.service.UserService;
 
-import org.teamseven.hms.backend.user.entity.Patient;
-import org.teamseven.hms.backend.user.entity.PatientRepository;
-
+import java.util.NoSuchElementException;
 import java.util.Optional;
 import java.util.UUID;
 import java.util.logging.Logger;
 
 @Service
 public class AdminService  {
-    @Autowired private BookingRepository bookingRepository;
+    @Autowired
+    private BookingRepository bookingRepository;
 
     @Autowired
     private UserRepository userRepository;
@@ -49,7 +47,15 @@ public class AdminService  {
     @Autowired
     private CatalogService catalogService;
 
-    @Autowired private PatientRepository patientRepository;
+    @Autowired
+    private PatientRepository patientRepository;
+
+    @Autowired
+    private StaffRepository staffRepository;
+
+    @Autowired
+    private UserService userService;
+
 
     @Transactional
     public boolean modifyBooking(ModifyBookingRequest modifyBookingRequest) {
@@ -132,6 +138,11 @@ public class AdminService  {
                     );
                 }
 
+                if (request.getRole() == Role.STAFF) {
+                    Staff staff = createStaffAccount(createdUser);
+                    staffRepository.save(staff);
+                }
+
                 return createdUser.getUserId();
             });
         } catch (Exception e) {
@@ -149,6 +160,16 @@ public class AdminService  {
                 .speciality(request.getSpecialty())
                 .consultationFees(request.getConsultationFees())
                 .yearsOfExperience(request.getYearsOfExperience())
+                .build();
+    }
+
+    private Staff createStaffAccount(
+            User createdUser
+    ) {
+        return Staff.builder()
+                .user(createdUser)
+                .type("Support")
+                .isActive(1)
                 .build();
     }
 
@@ -171,5 +192,73 @@ public class AdminService  {
                                         .build()
                         ).toList())
                 .build();
+    }
+
+    public RetrieveStaffPaginationResponse getAllStaff(
+            @RequestParam(defaultValue = "1") int page,
+            @RequestParam(defaultValue = "10") int pageSize
+    ) {
+        int zeroBasedIndexPage = page - 1;
+        Page<Staff> staffList = staffRepository.getStaff(Pageable.ofSize(pageSize).withPage(zeroBasedIndexPage));
+        return RetrieveStaffPaginationResponse.builder()
+                .currentPage(page)
+                .totalElements(staffList.getTotalElements())
+                .items(staffList.stream().map(it ->
+                        RetrieveStaffItem.builder()
+                                .staffId(it.getStaffId())
+                                .userId(it.getUser().getUserId())
+                                .firstname(it.getUser().getFirstName())
+                                .lastName(it.getUser().getLastName())
+                                .email(it.getUser().getEmail())
+                                .build()
+                ).toList())
+                .build();
+    }
+
+    public Staff getStaffProfile(UUID staffId) {
+        return staffRepository.findById(staffId).orElseThrow(NoSuchElementException::new);
+    }
+
+    @Transactional
+    public User updateStaffProfile(HttpServletRequest request, UserRequest userRequest) {
+        User user = userService.getUserProfile(request);
+
+        if (userRequest.getFirstName() != null && !userRequest.getFirstName().isEmpty()) {
+            user.setFirstName(userRequest.getFirstName());
+        }
+
+        if (userRequest.getLastName() != null && !userRequest.getLastName().isEmpty()) {
+            user.setLastName(userRequest.getLastName());
+        }
+
+        if (userRequest.getPassword() != null && !userRequest.getPassword().isEmpty()) {
+            user.setPassword(passwordEncoder.encode(userRequest.getPassword()));
+        }
+
+        if (userRequest.getGender() != null && !userRequest.getGender().isEmpty()) {
+            user.setGender(userRequest.getGender());
+        }
+
+        if (userRequest.getEmail() != null && !userRequest.getEmail().isEmpty()) {
+            user.setEmail(userRequest.getEmail());
+        }
+
+        if (userRequest.getNric() != null && !userRequest.getNric().isEmpty()) {
+            user.setNric(userRequest.getNric());
+        }
+
+        if (userRequest.getAddress() != null && !userRequest.getAddress().isEmpty()) {
+            user.setAddress(userRequest.getAddress());
+        }
+
+        if (userRequest.getDateOfBirth() != null && !userRequest.getDateOfBirth().isEmpty()) {
+            user.setDateOfBirth(userRequest.getDateOfBirth());
+        }
+
+        if (userRequest.getPhone() != null && !userRequest.getPhone().isEmpty()) {
+            user.setPhone(userRequest.getPhone());
+        }
+
+        return userRepository.save(user);
     }
 }
