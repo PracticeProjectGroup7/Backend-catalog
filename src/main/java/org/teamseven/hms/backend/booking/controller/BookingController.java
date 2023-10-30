@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.teamseven.hms.backend.booking.annotation.PatientBookingAccessValidated;
+import org.teamseven.hms.backend.booking.annotation.PatientDataRequestedMethod;
 import org.teamseven.hms.backend.booking.dto.AddBookingRequest;
 import org.teamseven.hms.backend.booking.service.BookingService;
 import org.teamseven.hms.backend.booking.service.SlotCheckerService;
@@ -41,7 +42,7 @@ public class BookingController {
     }
 
 
-    @PatientBookingAccessValidated
+    @PatientBookingAccessValidated(dataRequestMethod = PatientDataRequestedMethod.BOOKING_ID_PATH)
     @GetMapping(value = "bookings/{bookingId}")
     public ResponseEntity<ResponseWrapper> getBookingDetails(
             @PathVariable UUID bookingId

@@ -130,6 +130,7 @@ public class CatalogServiceTest {
                         .serviceid(UUID.randomUUID().toString())
                         .name("test name")
                         .description("test description")
+                        .estimatedPrice(25.5)
                         .build()
         );
     }
@@ -141,6 +142,7 @@ public class CatalogServiceTest {
                         .serviceid(UUID.randomUUID().toString())
                         .name("test name")
                         .description("test description")
+                        .estimatedPrice(25.5)
                         .build()
         );
     }
