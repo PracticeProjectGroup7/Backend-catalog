@@ -35,6 +35,22 @@ public class UserService {
         User user = this.getUserProfile(request);
         Patient patient = patientRepository.findByUser(user);
 
+        user = this.setUpdateFields(user, userRequest);
+
+        if (userRequest.getBloodGroup() != null && !userRequest.getBloodGroup().isEmpty()) {
+            patient.setBloodGroup(userRequest.getBloodGroup());
+        }
+
+        if (userRequest.getMedicalConditions() != null && !userRequest.getMedicalConditions().isEmpty()) {
+            patient.setMedicalCondition(userRequest.getMedicalConditions());
+        }
+
+        userRepository.save(user);
+        patientRepository.save(patient);
+        return patient;
+    }
+
+    public User setUpdateFields(User user, UserRequest userRequest) {
         if (userRequest.getFirstName() != null && !userRequest.getFirstName().isEmpty()) {
             user.setFirstName(userRequest.getFirstName());
         }
@@ -71,17 +87,7 @@ public class UserService {
             user.setPhone(userRequest.getPhone());
         }
 
-        if (userRequest.getBloodGroup() != null && !userRequest.getBloodGroup().isEmpty()) {
-            patient.setBloodGroup(userRequest.getBloodGroup());
-        }
-
-        if (userRequest.getMedicalConditions() != null && !userRequest.getMedicalConditions().isEmpty()) {
-            patient.setMedicalCondition(userRequest.getMedicalConditions());
-        }
-
-        userRepository.save(user);
-        patientRepository.save(patient);
-        return patient;
+        return user;
     }
 
     public Patient getPatientProfile(HttpServletRequest request) {
