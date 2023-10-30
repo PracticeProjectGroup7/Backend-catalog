@@ -12,11 +12,14 @@ import org.teamseven.hms.backend.shared.exception.ResourceNotFoundException;
 import org.teamseven.hms.backend.shared.exception.UnauthorizedAccessException;
 import org.teamseven.hms.backend.user.Role;
 import org.teamseven.hms.backend.user.User;
+import org.teamseven.hms.backend.user.entity.DoctorRepository;
 import org.teamseven.hms.backend.user.entity.Patient;
 import org.teamseven.hms.backend.user.UserRepository;
 import org.teamseven.hms.backend.user.entity.PatientRepository;
 
 import java.util.HashMap;
+import java.util.NoSuchElementException;
+import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
@@ -27,6 +30,7 @@ public class AuthenticationService {
     private final JwtService jwtService;
     private final AuthenticationManager authenticationManager;
     private final PatientRepository patientRepository;
+    private final DoctorRepository doctorRepository;
 
     @Transactional
     public HashMap<String, Object> register(RegisterRequest request) {
@@ -86,12 +90,20 @@ public class AuthenticationService {
         } catch (BadCredentialsException e) {
             throw new UnauthorizedAccessException();
         }
-        var patient = patientRepository.findByUser(user);
+
+        UUID genericRoleId = null;
+        if(user.getRole() == Role.DOCTOR) {
+            var doctor = doctorRepository.findByUserId(user.getUserId()).orElseThrow(NoSuchElementException::new);
+            genericRoleId = doctor.getDoctorId();
+        } else if (user.getRole() == Role.PATIENT) {
+            var patient = patientRepository.findByUser(user);
+            genericRoleId = patient.getPatientId();
+        }
         var jwtToken = jwtService.generateToken(
                 user,
                 user.getUserId(),
                 user.getRole(),
-                patient.getPatientId(),
+                genericRoleId,
                 user.getName()
         );
         return AuthenticationResponse
