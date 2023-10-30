@@ -222,43 +222,7 @@ public class AdminService  {
     @Transactional
     public User updateStaffProfile(HttpServletRequest request, UserRequest userRequest) {
         User user = userService.getUserProfile(request);
-
-        if (userRequest.getFirstName() != null && !userRequest.getFirstName().isEmpty()) {
-            user.setFirstName(userRequest.getFirstName());
-        }
-
-        if (userRequest.getLastName() != null && !userRequest.getLastName().isEmpty()) {
-            user.setLastName(userRequest.getLastName());
-        }
-
-        if (userRequest.getPassword() != null && !userRequest.getPassword().isEmpty()) {
-            user.setPassword(passwordEncoder.encode(userRequest.getPassword()));
-        }
-
-        if (userRequest.getGender() != null && !userRequest.getGender().isEmpty()) {
-            user.setGender(userRequest.getGender());
-        }
-
-        if (userRequest.getEmail() != null && !userRequest.getEmail().isEmpty()) {
-            user.setEmail(userRequest.getEmail());
-        }
-
-        if (userRequest.getNric() != null && !userRequest.getNric().isEmpty()) {
-            user.setNric(userRequest.getNric());
-        }
-
-        if (userRequest.getAddress() != null && !userRequest.getAddress().isEmpty()) {
-            user.setAddress(userRequest.getAddress());
-        }
-
-        if (userRequest.getDateOfBirth() != null && !userRequest.getDateOfBirth().isEmpty()) {
-            user.setDateOfBirth(userRequest.getDateOfBirth());
-        }
-
-        if (userRequest.getPhone() != null && !userRequest.getPhone().isEmpty()) {
-            user.setPhone(userRequest.getPhone());
-        }
-
+        user = userService.setUpdateFields(user, userRequest);
         return userRepository.save(user);
     }
 }
