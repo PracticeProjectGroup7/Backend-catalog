@@ -2,7 +2,6 @@ spring:
   data:
     mongodb:
       uri: mongodb+srv://MongoECSUser:Helucipass745@ecsmongodb.cluster-cqunz6ixnkor.ap-southeast-1.docdb.amazonaws.com:27017/healdb?authSource=admin
-
       uuid-representation: standard
   jpa:
     database-platform: org.hibernate.dialect.MySQL8Dialect
