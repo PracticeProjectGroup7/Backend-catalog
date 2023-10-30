@@ -1,17 +1,7 @@
 FROM eclipse-temurin:17-jdk-jammy
-
-WORKDIR /hms/
-
-COPY mvnw /hms/
-COPY pom.xml /hms/
-ADD .mvn/wrapper /hms/.mvn/wrapper
-
-RUN [ "./mvnw", "-B", "-ntp", "-q", "dependency:go-offline"]
-
-COPY docker_entrypoint.sh /hms/
-CMD java -classpath src/main/java org.teamseven.hms.backend.MainServerApplication
-RUN chmod +x /hms/docker_entrypoint.sh
-
+#RUN apt-get update && apt-get install -y curl
+WORKDIR /app
+ADD target/backend-0.0.1-SNAPSHOT.jar /app/backend-0.0.1-SNAPSHOT.jar
+ENV SPRING_PROFILES_ACTIVE=dev
 EXPOSE 8080
-
-ENTRYPOINT ["/hms/docker_entrypoint.sh"]
+ENTRYPOINT ["java","-jar","backend-0.0.1-SNAPSHOT.jar"]
