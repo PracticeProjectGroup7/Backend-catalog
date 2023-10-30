@@ -2,4 +2,9 @@ server:
   port: 8080
 
 sec-env-conf:
-  enable-login-guard: true
+  enable-login-guard: false
+
+spring:
+  data:
+    mongodb:
+      uuid-representation: standard

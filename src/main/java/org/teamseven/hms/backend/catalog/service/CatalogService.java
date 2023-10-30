@@ -29,7 +29,7 @@ public class CatalogService {
     @Autowired private DoctorService doctorService;
 
     public ServiceOverview getServiceOverview(UUID serviceId) {
-        org.teamseven.hms.backend.catalog.entity.Service service = repository.findById(serviceId)
+        org.teamseven.hms.backend.catalog.entity.Service service = repository.findById(serviceId.toString())
                 .orElseThrow(NoSuchElementException::new);
 
         return getOverview.apply(service);
@@ -37,9 +37,9 @@ public class CatalogService {
 
     Function<org.teamseven.hms.backend.catalog.entity.Service, ServiceOverview> getOverview = it ->
             ServiceOverview.builder()
-                    .serviceId(it.getServiceId())
+                    .serviceId(UUID.fromString(it.getServiceid()))
                     .staffId(it.getStaffid())
-                    .doctorId(it.getDoctorId())
+                    .doctorId(UUID.fromString(it.getDoctorid()))
                     .type(it.getType())
                     .name(it.getName())
                     .description(it.getDescription())
@@ -78,32 +78,31 @@ public class CatalogService {
     > getTestCatalogItem = it -> ServiceCatalogItem.Test.builder()
             .name(it.getName())
             .description(it.getDescription())
-            .serviceId(it.getServiceId())
+            .serviceId(UUID.fromString(it.getServiceid()))
             .type(ServiceType.TEST)
             .build();
 
     private List<ServiceCatalogItem> constructDoctorAppointmentsCatalog(
             Page<org.teamseven.hms.backend.catalog.entity.Service> services
     ) {
-        List<UUID> doctorIds = services.map(it -> it.getDoctorId()).toList();
+        List<UUID> doctorIds = services.map(it -> UUID.fromString(it.getDoctorid())).toList();
         Map<UUID, DoctorProfile> doctorProfiles = doctorService.getDoctorProfiles(doctorIds)
                 .stream().collect(Collectors.toMap(DoctorProfile::getDoctorId, item -> item));
 
-
         return services.map(
-                it -> getAppointmentCatalogItem.apply(it, doctorProfiles.get(it.getDoctorId()))
+                it -> getAppointmentCatalogItem.apply(it, doctorProfiles.get(UUID.fromString(it.getDoctorid())))
         ).toList();
     }
 
     public UUID createNewService(CreateDoctorService newService) {
         org.teamseven.hms.backend.catalog.entity.Service service = org.teamseven.hms.backend.catalog.entity.Service.builder()
-                .doctorId(newService.getDoctorId())
+                .doctorid(newService.getDoctorId().toString())
                 .type(ServiceType.APPOINTMENT.name())
                 .name(newService.getName())
                 .description(newService.getDescription())
                 .estimatedPrice(newService.getEstimatedPrice())
                 .build();
-        return repository.save(service).getServiceId();
+        return UUID.fromString(repository.save(service).getServiceid());
     }
 
     private final BiFunction<
@@ -112,8 +111,8 @@ public class CatalogService {
             ServiceCatalogItem
             > getAppointmentCatalogItem = (it, profile) -> ServiceCatalogItem.DoctorAppointment
             .builder()
-            .doctorId(it.getDoctorId())
-            .serviceId(it.getServiceId())
+            .doctorId(UUID.fromString(it.getDoctorid()))
+            .serviceId(UUID.fromString(it.getServiceid()))
             .name(it.getName())
             .description(it.getDescription())
             .specialty(profile.getSpecialty())
@@ -121,7 +120,7 @@ public class CatalogService {
             .type(ServiceType.APPOINTMENT).build();
 
     public ServiceOverview getServiceOverviewByDoctorId(UUID doctorId) {
-        org.teamseven.hms.backend.catalog.entity.Service service = repository.findByDoctorId(doctorId)
+        org.teamseven.hms.backend.catalog.entity.Service service = repository.findByDoctorid(doctorId.toString())
                 .orElseThrow(NoSuchElementException::new);
 
         return getOverview.apply(service);

@@ -11,7 +11,6 @@ import java.util.Date;
 import java.util.List;
 import java.util.Set;
 import java.util.UUID;
-import java.util.logging.Logger;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
@@ -29,10 +28,6 @@ public class SlotCheckerService {
             UUID serviceId,
             Date reservedDate
     ) {
-        Logger.getAnonymousLogger().info(
-                "beginning query. service id: "
-                + serviceId + "reserved date: " + new SimpleDateFormat(DATE_FORMAT).format(reservedDate)
-        );
         List<Booking> existingBookings = repository.findByServiceIdAndReservedDate(
                 serviceId,
                 new SimpleDateFormat(DATE_FORMAT).format(reservedDate)

@@ -1,39 +1,27 @@
 package org.teamseven.hms.backend.catalog.entity;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.FetchType;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.Id;
-import jakarta.persistence.OneToOne;
-import jakarta.persistence.Table;
-import lombok.AllArgsConstructor;
+import jakarta.persistence.*;
 import lombok.Builder;
 import lombok.Data;
-import lombok.NoArgsConstructor;
 import org.hibernate.annotations.*;
-import org.teamseven.hms.backend.user.entity.Doctor;
+import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.mapping.Document;
 
+import java.time.Instant;
 import java.time.OffsetDateTime;
 import java.util.UUID;
 
 @Data
 @Builder
-@NoArgsConstructor
-@AllArgsConstructor
-@Entity
-@SQLDelete(sql = "UPDATE services SET is_active = '0' WHERE servicesid=?")
-@Where(clause = "is_active = 1")
-@Table(name = "services")
+@Document("services")
 public class Service {
     @Id
-    @Column(name="servicesid", insertable=false)
-    @GeneratedValue
-    private UUID serviceId;
+    @Builder.Default
+    @Column(name="servicesid")
+    private String serviceid = UUID.randomUUID().toString();
 
     @Column(name = "doctorid")
-    private UUID doctorId;
+    private String doctorid;
 
     @Column(name = "staffid")
     private UUID staffid;
@@ -48,12 +36,12 @@ public class Service {
 
     private Double estimatedPrice;
 
-    @Column(insertable=false)
+    @Builder.Default
     private Integer isActive = 1;
 
-    @Generated()
     @Column(name="created_at", insertable=false)
-    private OffsetDateTime createdAt;
+    @Builder.Default
+    private Instant createdAt = Instant.now();
 
-    private OffsetDateTime modifiedAt;
+    private Instant modifiedAt;
 }

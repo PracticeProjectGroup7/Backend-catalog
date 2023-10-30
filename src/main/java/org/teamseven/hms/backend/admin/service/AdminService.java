@@ -117,7 +117,6 @@ public class AdminService  {
 
                 if (request.getRole() == Role.DOCTOR) {
                     Doctor doctor = createDoctorAccount(user.getUserId(), request);
-                    Logger.getAnonymousLogger().info("Creating doctor account "+ doctor);
                     Doctor createdDoctor = doctorRepository.save(doctor);
                     catalogService.createNewService(
                             CreateDoctorService.builder()
@@ -128,8 +127,6 @@ public class AdminService  {
                                     .build()
                     );
                 }
-
-            // Creating doctor account Doctor(doctorId=null, userId=08844ec8-7b45-4d99-9464-f3643bca3672, speciality=Ophthalmology, consultationFees=26.5, yearsOfExperience=4, isActive=null, createdAt=null, modifiedAt=null)
 
                 return createdUser.getUserId();
         });
