@@ -44,7 +44,7 @@ public class JwtService {
             Map<String, String> extraClaims,
             UserDetails userDetails
     ) {
-        return buildToken(extraClaims, userDetails, 1000 * 60 * 10);
+        return buildToken(extraClaims, userDetails, 1000 * 60 * 60); // millsec * sec * min * hour
     }
 
     private String buildToken(
