@@ -80,6 +80,7 @@ public class CatalogService {
             .description(it.getDescription())
             .serviceId(UUID.fromString(it.getServiceid()))
             .type(ServiceType.TEST)
+            .estimatedPrice(it.getEstimatedPrice())
             .build();
 
     private List<ServiceCatalogItem> constructDoctorAppointmentsCatalog(
@@ -117,6 +118,7 @@ public class CatalogService {
             .description(it.getDescription())
             .specialty(profile.getSpecialty())
             .yearsOfExperience(profile.getYearOfExperience())
+            .estimatedPrice(it.getEstimatedPrice())
             .type(ServiceType.APPOINTMENT).build();
 
     public ServiceOverview getServiceOverviewByDoctorId(UUID doctorId) {

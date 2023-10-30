@@ -18,6 +18,7 @@ public sealed class ServiceCatalogItem {
         private String description;
         private UUID serviceId;
         private ServiceType type = ServiceType.TEST;
+        private Double estimatedPrice;
     }
 
     @Data
@@ -32,5 +33,6 @@ public sealed class ServiceCatalogItem {
         private UUID doctorId;
         private String yearsOfExperience;
         private String specialty;
+        private Double estimatedPrice;
     }
 }
