@@ -1,7 +1,7 @@
 spring:
   data:
     mongodb:
-      uri: mongodb://user:pass@localhost:27017/healdb?authSource=admin
+      uri: mongodb://MongoECSUser:Helucipass745@ecsmongodb.cluster-cqunz6ixnkor.ap-southeast-1.docdb.amazonaws.com:27017/healdb?authSource=admin
       uuid-representation: standard
   jpa:
     database-platform: org.hibernate.dialect.MySQL8Dialect
@@ -14,13 +14,13 @@ spring:
   datasource:
     url: jdbc:mysql://heal-db.c8cer7bgfoe7.ap-southeast-1.rds.amazonaws.com/healdb
     driverClassName: com.mysql.cj.jdbc.Driver
-    username: {{secrets}}
-    password: {{secrets}}
+    username: healmaster
+    password: healgroup7
 
   flyway:
     url: jdbc:mysql://heal-db.c8cer7bgfoe7.ap-southeast-1.rds.amazonaws.com/healdb
-    user: {{secrets}}
-    password: {{secrets}}
+    user: healmaster
+    password: healgroup7
     baselineOnMigrate: true
 
 secEnvConf:
