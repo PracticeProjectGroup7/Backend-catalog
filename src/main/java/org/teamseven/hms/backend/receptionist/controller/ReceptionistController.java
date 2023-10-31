@@ -32,11 +32,12 @@ public class ReceptionistController {
         return ResponseEntity.ok(new ResponseWrapper.Success<>(billService.getBillByBookingId(booking_id)));
     }
 
-    @PatchMapping("/bills")
+    @PatchMapping("/bills/{booking_id}")
     public ResponseEntity<ResponseWrapper> updateBillStatus(
+            @PathVariable String booking_id,
             @RequestBody UpdateBillRequest updateBillRequest
     ) {
-        return ResponseEntity.ok(new ResponseWrapper.Success<>(billService.updateBill(updateBillRequest)));
+        return ResponseEntity.ok(new ResponseWrapper.Success<>(billService.updateBill(updateBillRequest, booking_id)));
     }
 
     @PatchMapping("/modify-test")

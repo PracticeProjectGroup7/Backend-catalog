@@ -220,8 +220,8 @@ public class AdminService  {
     }
 
     @Transactional
-    public User updateStaffProfile(UserRequest userRequest) {
-        User user = userRepository.getStaffAccount(userRequest.getEmail()).orElseThrow(NoSuchElementException::new);
+    public User updateStaffProfile(UserRequest userRequest, UUID user_id) {
+        User user = userRepository.findById(user_id).orElseThrow(NoSuchElementException::new);
         user = userService.setUpdateFields(user, userRequest);
         return userRepository.save(user);
     }

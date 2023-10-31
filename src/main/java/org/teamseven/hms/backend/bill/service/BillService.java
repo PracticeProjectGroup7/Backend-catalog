@@ -26,11 +26,11 @@ public class BillService {
     }
 
     @Transactional
-    public boolean updateBill(UpdateBillRequest updateBillRequest) {
+    public boolean updateBill(UpdateBillRequest updateBillRequest, String booking_id) {
         return bookingRepository.updateBillStatus(
                 updateBillRequest.getBillStatus(),
                 updateBillRequest.getPaidAt(),
-                updateBillRequest.getBookingId()
+                booking_id
         ) == 1;
     }
 }
