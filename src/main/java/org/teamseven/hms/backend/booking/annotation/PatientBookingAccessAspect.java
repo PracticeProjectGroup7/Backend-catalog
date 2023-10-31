@@ -33,8 +33,6 @@ public class PatientBookingAccessAspect {
         ).getRequest();
         String jwtToken = getJwtToken(request);
         Claims jwtClaims = jwtService.extractAllClaims(jwtToken);
-
-        UUID roleIdentifier = UUID.fromString(jwtClaims.get("roleId", String.class));
         Role role = Role.valueOf(jwtClaims.get("ROLE", String.class));
 
         switch (role) {
@@ -42,6 +40,12 @@ public class PatientBookingAccessAspect {
                 PatientDataRequestedMethod dataRequestMethod = patientBookingAccessValidated.dataRequestMethod();
                 BookingEndpointPatientAccessValidator validator = BookingEndpointPatientAccessValidator
                         .getValidator(dataRequestMethod);
+
+                if (jwtClaims.get("roleId", String.class) == null) {
+                    throw new UnauthorizedAccessException();
+                }
+
+                UUID roleIdentifier = UUID.fromString(jwtClaims.get("roleId", String.class));
 
                 if (!validator.isAccessGranted(pjp, roleIdentifier)) {
                     throw new UnauthorizedAccessException();
