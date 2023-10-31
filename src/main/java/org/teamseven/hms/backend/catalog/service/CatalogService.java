@@ -39,7 +39,7 @@ public class CatalogService {
             ServiceOverview.builder()
                     .serviceId(UUID.fromString(it.getServiceid()))
                     .staffId(it.getStaffid())
-                    .doctorId(UUID.fromString(it.getDoctorid()))
+                    .doctorId(it.getDoctorid() == null ? null : UUID.fromString(it.getDoctorid()))
                     .type(it.getType())
                     .name(it.getName())
                     .description(it.getDescription())
