@@ -6,7 +6,6 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.hibernate.annotations.Generated;
 import org.hibernate.annotations.SQLDelete;
 import org.hibernate.annotations.Where;
 
@@ -35,6 +34,7 @@ public class Appointment {
     private String prescription;
 
     @Enumerated(EnumType.STRING)
+    @Builder.Default
     private AppointmentStatus status = AppointmentStatus.PENDING;
 
     @NotNull
