@@ -14,6 +14,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.UUID;
+import java.util.logging.Logger;
 
 @RestController
 @RequestMapping("/api/v1/services/")
@@ -43,7 +44,7 @@ public class BookingController {
 
 
     @PatientBookingAccessValidated(dataRequestMethod = PatientDataRequestedMethod.BOOKING_ID_PATH)
-    @GetMapping(value = "bookings/{bookingId}")
+    @GetMapping(value = "booking-details/{bookingId}")
     public ResponseEntity<ResponseWrapper> getBookingDetails(
             @PathVariable UUID bookingId
     ) {
@@ -65,7 +66,7 @@ public class BookingController {
                 );
     }
 
-    @GetMapping(value = "bookings/{serviceId}/schedules")
+    @GetMapping(value = "booking-schedules/{serviceId}")
     public ResponseEntity<ResponseWrapper> getAppointmentSlotsOnADay(
             @PathVariable UUID serviceId,
             @RequestParam String date

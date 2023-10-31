@@ -131,7 +131,7 @@ public class BookingControllerTest {
         when(bookingService.getBookingInfo(any(UUID.class)))
                 .thenReturn(bookingInfoResponse);
 
-        mockMvc.perform(get("/api/v1/services/bookings/07fec0a8-7145-11ee-8684-0242ac130003"))
+        mockMvc.perform(get("/api/v1/services/booking-details/07fec0a8-7145-11ee-8684-0242ac130003"))
                 .andExpect(status().isOk())
                 .andExpect(content().json(objectMapper.writeValueAsString(expectedResponse)));
 
@@ -153,7 +153,7 @@ public class BookingControllerTest {
         when(slotCheckerService.getServiceSlots(any(), any())).thenReturn(slotInfo);
 
         mockMvc.perform(
-                get("/api/v1/services/bookings/614de180-73d1-11ee-b962-0242ac120002/schedules?date=2023-01-01"))
+                get("/api/v1/services/booking-schedules/614de180-73d1-11ee-b962-0242ac120002?date=2023-01-01"))
                 .andExpect(status().isOk())
                 .andExpect(content().json(expectedResponseBody));
 
