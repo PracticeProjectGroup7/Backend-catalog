@@ -11,7 +11,6 @@ import org.hibernate.annotations.SQLDelete;
 import org.hibernate.annotations.Where;
 
 import java.time.OffsetDateTime;
-import java.util.Date;
 import java.util.UUID;
 
 @Data
@@ -40,6 +39,7 @@ public class Test {
 
     @NotNull
     @Enumerated(EnumType.STRING)
+    @Builder.Default
     private TestStatus status = TestStatus.PENDING;
 
     @NotNull
