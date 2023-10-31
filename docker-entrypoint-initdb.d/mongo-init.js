@@ -27,7 +27,7 @@ db.services.insertMany([
 		_class: 'org.teamseven.hms.backend.catalog.entity.Service'
 	},
 	{
-		_id: '23882e13-9fa8-4dad-8637-fc0015ca8869',
+		_id: '0b535a79-1d42-450a-9a70-884761336c91',
 		type: 'TEST',
 		name: 'Blood glucose test',
 		description: 'Venous (plasma) glucose test for diabetes screening',
@@ -57,7 +57,7 @@ db.services.insertMany([
 		_class: 'org.teamseven.hms.backend.catalog.entity.Service'
 	},
 	{
-		_id: 'add03e0e-dcbf-4aa4-a055-d4968dc34a00',
+		_id: '5f041f07-72e1-11ee-8b59-0242ac130003',
 		type: 'TEST',
 		name: 'Thyroid blood test',
 		description: 'Scan for hypothyroidism or hyperthyroidism',
@@ -105,5 +105,71 @@ db.services.insertMany([
 		isActive: 1,
 		createdAt: ISODate("2023-10-29T07:49:29.670Z"),
 		_class: 'org.teamseven.hms.backend.catalog.entity.Service'
-	}
+	},
+	{
+        _id: '0b535a79-1d42-450a-9a70-884761336c91',
+        doctorid: 'bc9ce410-9630-4baf-9bf7-ed4cbf736bb4',
+        type: 'APPOINTMENT',
+        name: 'test add service burner',
+        description: 'Ophthalmology',
+        estimatedPrice: 26.5,
+        isActive: 1,
+        createdAt: ISODate("2023-10-29T07:49:29.670Z"),
+        _class: 'org.teamseven.hms.backend.catalog.entity.Service'
+      },
+      {
+        _id: 'a803b134-3074-464d-998a-32c789464f03',
+        doctorid: '045de8f0-a442-46c7-8ec9-740c525277f3',
+        type: 'APPOINTMENT',
+        name: 'test add service burner',
+        description: 'Ophthalmology',
+        estimatedPrice: 26.5,
+        isActive: 1,
+        createdAt: ISODate("2023-10-29T08:05:23.911Z"),
+        _class: 'org.teamseven.hms.backend.catalog.entity.Service'
+      },
+      {
+        _id: '8e39c9aa-64d2-4eac-97ad-13776ba9c3fd',
+        doctorid: 'a9cf7f0b-4ab9-415e-b7c1-79cb2fd14354',
+        type: 'APPOINTMENT',
+        name: 'test add service burner',
+        description: 'Ophthalmology',
+        estimatedPrice: 26.5,
+        isActive: 1,
+        createdAt: ISODate("2023-10-29T08:05:43.242Z"),
+        _class: 'org.teamseven.hms.backend.catalog.entity.Service'
+      },
+      {
+        _id: '1af986fa-284d-46c9-9d53-3ba6f7815802',
+        doctorid: 'f5d3226d-2445-461d-adee-0560abb2a411',
+        type: 'APPOINTMENT',
+        name: 'test add service burner',
+        description: 'DERMATOLOGY',
+        estimatedPrice: 26.5,
+        isActive: 1,
+        createdAt: ISODate("2023-10-29T08:06:00.873Z"),
+        _class: 'org.teamseven.hms.backend.catalog.entity.Service'
+      },
+      {
+        _id: '5cb0c4ea-0d95-49f1-8e54-b39c86ac83cc',
+        doctorid: 'cb80c40b-6ebe-4cf8-8a9c-875ff78ddc92',
+        type: 'APPOINTMENT',
+        name: 'test add service burner',
+        description: 'PEDIATRY',
+        estimatedPrice: 26.5,
+        isActive: 1,
+        createdAt: ISODate("2023-10-29T08:06:47.429Z"),
+        _class: 'org.teamseven.hms.backend.catalog.entity.Service'
+      },
+      {
+        _id: '73a19577-2e53-459d-96a5-ada9082ca909',
+        doctorid: 'f439ec76-7542-473d-8b6e-5beb38d97c86',
+        type: 'APPOINTMENT',
+        name: 'test add service burner',
+        description: 'NEUROLOGY',
+        estimatedPrice: 26.5,
+        isActive: 1,
+        createdAt: ISODate("2023-10-29T08:07:10.777Z"),
+        _class: 'org.teamseven.hms.backend.catalog.entity.Service'
+      }
 ]);
