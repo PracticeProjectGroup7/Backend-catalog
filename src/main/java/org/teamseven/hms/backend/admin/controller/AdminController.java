@@ -33,11 +33,12 @@ public class AdminController {
     }
 
     @AdminEndpointAccessValidated(isReceptionistAccessAllowed = true)
-    @PatchMapping("/bills")
+    @PatchMapping("/bills/{booking_id}")
     public ResponseEntity<ResponseWrapper> updateBillStatus(
+            @PathVariable String booking_id,
             @RequestBody UpdateBillRequest updateBillRequest
     ) {
-        return ResponseEntity.ok(new ResponseWrapper.Success<>(billService.updateBill(updateBillRequest)));
+        return ResponseEntity.ok(new ResponseWrapper.Success<>(billService.updateBill(updateBillRequest, booking_id)));
     }
 
     @AdminEndpointAccessValidated
@@ -85,12 +86,13 @@ public class AdminController {
     }
 
     @AdminEndpointAccessValidated
-    @PatchMapping("staff")
+    @PatchMapping("staff/{user_id}")
     public ResponseEntity<ResponseWrapper> updateStaffProfile(
+            @PathVariable UUID user_id,
             @RequestBody UserRequest userRequest
     ) {
         return ResponseEntity.ok(
-                new ResponseWrapper.Success<>(adminService.updateStaffProfile(userRequest))
+                new ResponseWrapper.Success<>(adminService.updateStaffProfile(userRequest, user_id))
         );
     }
 }
