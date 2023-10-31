@@ -1,11 +1,9 @@
 package org.teamseven.hms.backend.admin.controller;
 
-import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.lang.NonNull;
 import org.springframework.web.bind.annotation.*;
 import org.teamseven.hms.backend.admin.annotation.AdminEndpointAccessValidated;
 import org.teamseven.hms.backend.admin.dto.ModifyBookingRequest;
@@ -89,11 +87,10 @@ public class AdminController {
     @AdminEndpointAccessValidated
     @PatchMapping("staff")
     public ResponseEntity<ResponseWrapper> updateStaffProfile(
-            @NonNull HttpServletRequest request,
             @RequestBody UserRequest userRequest
     ) {
         return ResponseEntity.ok(
-                new ResponseWrapper.Success<>(adminService.updateStaffProfile(request, userRequest))
+                new ResponseWrapper.Success<>(adminService.updateStaffProfile(userRequest))
         );
     }
 }

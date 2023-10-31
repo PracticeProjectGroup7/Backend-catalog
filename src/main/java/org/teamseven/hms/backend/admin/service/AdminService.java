@@ -1,6 +1,5 @@
 package org.teamseven.hms.backend.admin.service;
 
-import jakarta.servlet.http.HttpServletRequest;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -138,8 +137,8 @@ public class AdminService  {
                     );
                 }
 
-                if (request.getRole() == Role.STAFF) {
-                    Staff staff = createStaffAccount(createdUser);
+                if (request.getRole() == Role.STAFF || request.getRole() == Role.LAB_SUPPORT_STAFF) {
+                    Staff staff = createStaffAccount(createdUser, request.getRole());
                     staffRepository.save(staff);
                 }
 
@@ -164,11 +163,12 @@ public class AdminService  {
     }
 
     private Staff createStaffAccount(
-            User createdUser
+            User createdUser,
+            Role role
     ) {
         return Staff.builder()
                 .user(createdUser)
-                .type("Support")
+                .type(role.name())
                 .isActive(1)
                 .build();
     }
@@ -220,8 +220,8 @@ public class AdminService  {
     }
 
     @Transactional
-    public User updateStaffProfile(HttpServletRequest request, UserRequest userRequest) {
-        User user = userService.getUserProfile(request);
+    public User updateStaffProfile(UserRequest userRequest) {
+        User user = userRepository.getStaffAccount(userRequest.getEmail()).orElseThrow(NoSuchElementException::new);
         user = userService.setUpdateFields(user, userRequest);
         return userRepository.save(user);
     }
