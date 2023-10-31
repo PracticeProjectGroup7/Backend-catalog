@@ -2,7 +2,7 @@ server:
   port: 8080
 
 sec-env-conf:
-  enable-login-guard: false
+  enable-login-guard: true
 
 spring:
   data:

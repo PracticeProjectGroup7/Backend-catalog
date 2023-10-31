@@ -24,4 +24,4 @@ spring:
     baselineOnMigrate: true
 
 secEnvConf:
-  enableLoginGuard: false
+  enableLoginGuard: true
