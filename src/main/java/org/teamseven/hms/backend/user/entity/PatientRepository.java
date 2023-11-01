@@ -18,7 +18,7 @@ public interface PatientRepository extends CrudRepository<Patient, UUID> {
     Patient findByUser(User user);
 
     @Query(
-            value = "select * from Patient where patientid = UUID_TO_BIN(:patientId)",
+            value = "select * from patient where patientid = UUID_TO_BIN(:patientId)",
             nativeQuery = true)
     Optional<Patient> findByPatientId(String patientId);
 
