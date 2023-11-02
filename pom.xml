@@ -98,17 +98,6 @@
       <version>2.2.220</version>
     </dependency>
     <dependency>
-      <groupId>org.jacoco</groupId>
-      <artifactId>jacoco-maven-plugin</artifactId>
-      <version>0.8.10</version>
-      <exclusions>
-        <exclusion>  <!-- declare the exclusion here -->
-          <groupId>junit</groupId>
-          <artifactId>junit</artifactId>
-        </exclusion>
-      </exclusions>
-    </dependency>
-    <dependency>
       <groupId>org.assertj</groupId>
       <artifactId>assertj-core</artifactId>
       <version>3.24.2</version>
@@ -201,6 +190,11 @@
               <artifactId>junit</artifactId>
             </exclusion>
           </exclusions>
+            <excludes>
+                <exclude>org/teamseven/hms/backend/*/dto/*</exclude>
+                <exclude>org/teamseven/hms/backend/*/entity/*</exclude>
+                <exclude>**/config/*</exclude>
+            </excludes>
         </configuration>
         <executions>
           <execution>
@@ -219,7 +213,6 @@
         </executions>
       </plugin>
     </plugins>
-
   </build>
 
 </project>
