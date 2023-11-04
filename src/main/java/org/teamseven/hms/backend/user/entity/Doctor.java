@@ -1,14 +1,13 @@
 package org.teamseven.hms.backend.user.entity;
 
 import jakarta.persistence.*;
-import jakarta.validation.constraints.NotNull;
+import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.hibernate.annotations.Generated;
-import org.hibernate.annotations.SQLDelete;
-import org.hibernate.annotations.Where;
+import org.hibernate.annotations.*;
+import org.teamseven.hms.backend.user.User;
 
 import java.time.OffsetDateTime;
 import java.util.UUID;
@@ -27,8 +26,10 @@ public class Doctor {
     @GeneratedValue
     private UUID doctorId;
 
-    @Column(name = "userid")
-    private UUID userId;
+    @OneToOne
+    @OnDelete(action = OnDeleteAction.CASCADE)
+    @JoinColumn(name = "userid")
+    private User user;
 
     private String speciality;
 

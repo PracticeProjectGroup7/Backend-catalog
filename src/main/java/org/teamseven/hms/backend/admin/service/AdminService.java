@@ -125,7 +125,7 @@ public class AdminService  {
                 User createdUser = userRepository.save(user);
 
                 if (request.getRole() == Role.DOCTOR) {
-                    Doctor doctor = createDoctorAccount(user.getUserId(), request);
+                    Doctor doctor = createDoctorAccount(createdUser, request);
                     Doctor createdDoctor = doctorRepository.save(doctor);
                     catalogService.createNewService(
                             CreateDoctorService.builder()
@@ -151,11 +151,11 @@ public class AdminService  {
     }
 
     private Doctor createDoctorAccount(
-            UUID userId,
+            User createdUser,
             CreateHospitalAccountRequest request
     ) {
         return Doctor.builder()
-                .userId(userId)
+                .user(createdUser)
                 .speciality(request.getSpecialty())
                 .consultationFees(request.getConsultationFees())
                 .yearsOfExperience(request.getYearsOfExperience())
@@ -194,25 +194,12 @@ public class AdminService  {
                 .build();
     }
 
-    public RetrieveStaffPaginationResponse getAllStaff(
+    public Page<User> getAllStaff(
             @RequestParam(defaultValue = "1") int page,
             @RequestParam(defaultValue = "10") int pageSize
     ) {
         int zeroBasedIndexPage = page - 1;
-        Page<Staff> staffList = staffRepository.getStaff(Pageable.ofSize(pageSize).withPage(zeroBasedIndexPage));
-        return RetrieveStaffPaginationResponse.builder()
-                .currentPage(page)
-                .totalElements(staffList.getTotalElements())
-                .items(staffList.stream().map(it ->
-                        RetrieveStaffItem.builder()
-                                .staffId(it.getStaffId())
-                                .userId(it.getUser().getUserId())
-                                .firstname(it.getUser().getFirstName())
-                                .lastName(it.getUser().getLastName())
-                                .email(it.getUser().getEmail())
-                                .build()
-                ).toList())
-                .build();
+        return userRepository.getAllStaffAccounts(Pageable.ofSize(pageSize).withPage(zeroBasedIndexPage));
     }
 
     public Staff getStaffProfile(UUID staffId) {

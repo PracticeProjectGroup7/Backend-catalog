@@ -93,7 +93,7 @@ public class AuthenticationService {
 
         UUID genericRoleId = null;
         if(user.getRole() == Role.DOCTOR) {
-            var doctor = doctorRepository.findByUserId(user.getUserId()).orElseThrow(NoSuchElementException::new);
+            var doctor = doctorRepository.findByUser(user).orElseThrow(NoSuchElementException::new);
             genericRoleId = doctor.getDoctorId();
         } else if (user.getRole() == Role.PATIENT) {
             var patient = patientRepository.findByUser(user);

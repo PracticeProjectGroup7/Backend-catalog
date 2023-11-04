@@ -8,16 +8,19 @@ import org.teamseven.hms.backend.user.UserRequest;
 import org.teamseven.hms.backend.user.User;
 import org.teamseven.hms.backend.user.UserRepository;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.teamseven.hms.backend.user.entity.Patient;
-import org.teamseven.hms.backend.user.entity.PatientRepository;
+import org.teamseven.hms.backend.user.entity.*;
 
+import java.util.Objects;
 import java.util.Optional;
+import java.util.UUID;
 
 @Service
 public class UserService {
     @Autowired private UserRepository userRepository;
     @Autowired private PasswordEncoder passwordEncoder;
     @Autowired private PatientRepository patientRepository;
+    @Autowired private DoctorRepository doctorRepository;
+    @Autowired private StaffRepository staffRepository;
 
     public User getUserProfile(HttpServletRequest request) {
         var email = request.getAttribute("email");
@@ -90,12 +93,36 @@ public class UserService {
         return user;
     }
 
-    public Patient getPatientProfile(HttpServletRequest request) {
+    public Object getProfile(HttpServletRequest request) {
         var roleId = request.getAttribute("roleId");
-        Optional<Patient> patient = patientRepository.findByPatientId((String) roleId);
-        if(patient.isEmpty()) {
-            throw new ResourceNotFoundException("Patient not found!");
+
+        var ROLE = String.valueOf(request.getAttribute("ROLE"));
+
+        if(Objects.equals(ROLE, "PATIENT")) {
+            Optional<Patient> patient = patientRepository.findByPatientId((String) roleId);
+            if(patient.isEmpty()) {
+                throw new ResourceNotFoundException("Patient not found!");
+            }
+            return patient.get();
         }
-        return patient.get();
+
+        if(Objects.equals(ROLE, "DOCTOR")) {
+            Optional<Doctor> doctor = doctorRepository.findByDoctorId(UUID.fromString((String) roleId));
+            if(doctor.isEmpty()) {
+                throw new ResourceNotFoundException("Doctor not found!");
+            }
+            return doctor.get();
+        }
+
+        if(Objects.equals(ROLE, "STAFF") || Objects.equals(ROLE, "LAB_SUPPORT_STAFF")) {
+            User staffUser = this.getUserProfile(request);
+            Optional<Staff> staff = staffRepository.findByUser(staffUser);
+            if(staff.isEmpty()) {
+                throw new ResourceNotFoundException("Staff not found!");
+            }
+            return staff.get();
+        }
+
+        return null;
     }
 }

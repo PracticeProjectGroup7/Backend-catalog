@@ -20,7 +20,7 @@ public class UserController {
             @NonNull HttpServletRequest request
     ) {
         return ResponseEntity.ok(
-                new ResponseWrapper.Success<>(userService.getPatientProfile(request))
+                new ResponseWrapper.Success<>(userService.getProfile(request))
         );
     }
 
