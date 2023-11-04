@@ -1,0 +1,30 @@
+name: ODC
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened]
+  workflow_dispatch:
+
+jobs:
+  build_job:
+    runs-on: ubuntu-latest
+    name: Calculate coverage
+    permissions:
+      pull-requests: write
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+      - name: Install OWASP Dependency Check
+        run: |
+          VERSION=$(curl -s https://jeremylong.github.io/DependencyCheck/current.txt)
+          curl -Ls "https://github.com/jeremylong/DependencyCheck/releases/download/v$VERSION/dependency-check-$VERSION-release.zip" --output dependency-check.zip
+          unzip dependency-check.zip
+      - name: Run scan with ODC
+        run: |
+          dependency-check/bin/dependency-check.sh --scan . -f HTML -o ODC-report.html
+          zip odc.zip ODC-report.html debug.log
+      - name: Archive production artifacts
+        uses: actions/upload-artifact@v3
+        with:
+          name: sast report
+          path: odc.zip
