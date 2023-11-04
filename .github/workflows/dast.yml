@@ -11,6 +11,7 @@ jobs:
     name: Calculate coverage
     permissions:
       pull-requests: write
+      contents: read
     steps:
       - name: Checkout Code
         uses: actions/checkout@v4
