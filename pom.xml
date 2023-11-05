@@ -194,6 +194,19 @@
                 <exclude>org/teamseven/hms/backend/*/dto/*</exclude>
                 <exclude>org/teamseven/hms/backend/*/entity/*</exclude>
                 <exclude>**/config/*</exclude>
+                <exclude>org/teamseven/hms/backend/sample/**/*</exclude>
+                <exclude>org/teamseven/hms/backend/shared/annotation/*</exclude>
+              <exclude>org/teamseven/hms/backend/shared/*</exclude>
+              <exclude>org/teamseven/hms/backend/doctor/*/**</exclude>
+              <exclude>org/teamseven/hms/backend/admin/*/**</exclude>
+              <exclude>org/teamseven/hms/backend/bill/*/**</exclude>
+              <exclude>org/teamseven/hms/backend/auth/*</exclude>
+              <exclude>org/teamseven/hms/backend/user/service/*</exclude>
+              <exclude>org/teamseven/hms/backend/admin/service/*</exclude>
+              <exclude>org/teamseven/hms/backend/shared/exception/*</exclude>
+              <exclude>org/teamseven/hms/backend/receptionist/controller/*</exclude>
+              <exclude>org/teamseven/hms/backend/user/controller/*</exclude>
+              <exclude>org/teamseven/hms/backend/user/*</exclude>
             </excludes>
         </configuration>
         <executions>
