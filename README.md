@@ -86,6 +86,14 @@ Naming convention is as follows
 {U|V}{version_num}__{description_may_be_separated_by_underscores}.sql
 ```
 
+## Running unit tests
+To run unit tests & coverage report, execute the command below.
+```
+./mvnw [clean] test
+```
+Automatically generates code coverage based on the tests created. This excludes `dto/` and `entity/` from coverage calculation since all classes within said packages are dumb classes.
+Find coverage report inside `target/site/jacoco/index.html`
+
 ## Running the application
 To run, use the following command:
 ```agsl
