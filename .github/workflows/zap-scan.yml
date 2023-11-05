@@ -3,8 +3,6 @@ name: ZAP
 on:
   push:
     branches: [ "main" ]
-  pull_request:
-    types: [opened, reopened, review_requested, edited, synchronize]
   workflow_dispatch:
 
 jobs:
