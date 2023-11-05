@@ -2,15 +2,15 @@ name: ODC
 
 on:
   push:
-    branches: ["main", "track/*"]
+    branches: ["main"]
   pull_request:
     types: [opened, synchronize, reopened]
   workflow_dispatch:
 
 jobs:
-  build_job:
+  build:
     runs-on: ubuntu-latest
-    name: Calculate coverage
+    name: Run Dependency Check
     permissions:
       pull-requests: write
       contents: read

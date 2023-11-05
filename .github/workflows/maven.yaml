@@ -10,13 +10,12 @@ name: Java CI with Maven
 
 on:
   push:
-    branches: [ "HopeDevops", "main" ]
+    branches: [ "main" ]
 
 jobs:
   build:
-
     runs-on: ubuntu-latest
-
+    name: Run Dependency Check
     steps:
     - uses: actions/checkout@v3
     - name: Set up JDK 17
@@ -30,8 +29,7 @@ jobs:
       run: mvn package
     - name: Run rds migration
       run: ./mvnw flyway:migrate -Dflyway.url=jdbc:mysql://heal-db.c8cer7bgfoe7.ap-southeast-1.rds.amazonaws.com/healdb -Dflyway.user=healmaster -Dflyway.password=healgroup7
-      
-    
+
     - name: Configure AWS credentials
       uses: aws-actions/configure-aws-credentials@v4
       with:
@@ -42,11 +40,6 @@ jobs:
     - name: Login to Amazon ECR Private
       id: login-ecr
       uses: aws-actions/amazon-ecr-login@v1
-      
-   # - name: Automatic Tagging of Releases
-   #   id: increment-git-tag
-   #   run: |
-    #    bash ./build/git_update.sh -v major
 
     - name: Build, tag, and push docker image to Amazon ECR
       env:
@@ -56,5 +49,3 @@ jobs:
       run: |
         docker build -t $REGISTRY/$REPOSITORY:$IMAGE_TAG .
         docker push $REGISTRY/$REPOSITORY:$IMAGE_TAG
-
-

@@ -1,4 +1,5 @@
 name: Unit tests
+
 on:
   push:
     branches: [ "main" ]
@@ -9,6 +10,7 @@ on:
 defaults:
   run:
     shell: bash
+
 jobs:
   test:
     runs-on: ubuntu-latest
