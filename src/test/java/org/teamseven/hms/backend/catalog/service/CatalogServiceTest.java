@@ -13,9 +13,10 @@ import org.teamseven.hms.backend.catalog.dto.ServiceOverview;
 import org.teamseven.hms.backend.catalog.entity.Service;
 import org.teamseven.hms.backend.catalog.entity.ServiceRepository;
 import org.teamseven.hms.backend.catalog.entity.ServiceType;
-import org.teamseven.hms.backend.doctor.dto.DoctorProfile;
-import org.teamseven.hms.backend.doctor.service.DoctorService;
+import org.teamseven.hms.backend.client.DoctorProfile;
+import org.teamseven.hms.backend.client.UserClient;
 
+import java.io.IOException;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Optional;
@@ -32,8 +33,9 @@ public class CatalogServiceTest {
     @Mock
     private ServiceRepository serviceRepository;
 
+
     @Mock
-    private DoctorService doctorService;
+    private UserClient userClient;
 
     @InjectMocks
     private CatalogService catalogService;
@@ -78,7 +80,7 @@ public class CatalogServiceTest {
     }
 
     @Test
-    public void testGetAvailableServices_returnFormattedDataFromRepository() {
+    public void testGetAvailableServices_returnFormattedDataFromRepository() throws IOException {
         List<Service> mockList = getMockTestServiceList();
 
         when(serviceRepository.findAvailableServices(any(), any()))
@@ -94,7 +96,7 @@ public class CatalogServiceTest {
     }
 
     @Test
-    public void testGetDoctorsCatalog_returnFormattedDataFromRepository() {
+    public void testGetDoctorsCatalog_returnFormattedDataFromRepository() throws IOException {
         List<Service> mockList = getMockDoctorsServiceList();
 
         when(serviceRepository.findAvailableServices(any(), any()))
@@ -102,7 +104,7 @@ public class CatalogServiceTest {
                         new PageImpl(mockList, PageRequest.of(0, 10), 1L)
                 );
 
-        when(doctorService.getDoctorProfiles(any()))
+        when(userClient.getDoctorProfiles(any()))
                 .thenReturn(
                         List.of(
                                 DoctorProfile

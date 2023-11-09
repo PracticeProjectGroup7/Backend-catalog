@@ -10,9 +10,10 @@ import org.teamseven.hms.backend.catalog.dto.ServiceCatalogPaginationResponse;
 import org.teamseven.hms.backend.catalog.dto.ServiceOverview;
 import org.teamseven.hms.backend.catalog.entity.ServiceRepository;
 import org.teamseven.hms.backend.catalog.entity.ServiceType;
-import org.teamseven.hms.backend.doctor.dto.DoctorProfile;
-import org.teamseven.hms.backend.doctor.service.DoctorService;
+import org.teamseven.hms.backend.client.DoctorProfile;
+import org.teamseven.hms.backend.client.UserClient;
 
+import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 import java.util.NoSuchElementException;
@@ -25,8 +26,7 @@ import java.util.stream.Collectors;
 public class CatalogService {
     @Autowired
     private ServiceRepository repository;
-
-    @Autowired private DoctorService doctorService;
+    @Autowired private UserClient userClient;
 
     public ServiceOverview getServiceOverview(UUID serviceId) {
         org.teamseven.hms.backend.catalog.entity.Service service = repository.findById(serviceId.toString())
@@ -51,7 +51,7 @@ public class CatalogService {
             ServiceType serviceType,
             int page,
             int pageSize
-    ) {
+    ) throws IOException {
         int zeroBasedIndexPage = page - 1;
 
         Page<org.teamseven.hms.backend.catalog.entity.Service> services
@@ -85,9 +85,9 @@ public class CatalogService {
 
     private List<ServiceCatalogItem> constructDoctorAppointmentsCatalog(
             Page<org.teamseven.hms.backend.catalog.entity.Service> services
-    ) {
+    ) throws IOException {
         List<UUID> doctorIds = services.map(it -> UUID.fromString(it.getDoctorid())).toList();
-        Map<UUID, DoctorProfile> doctorProfiles = doctorService.getDoctorProfiles(doctorIds)
+        Map<UUID, DoctorProfile> doctorProfiles = userClient.getDoctorProfiles(doctorIds)
                 .stream().collect(Collectors.toMap(DoctorProfile::getDoctorId, item -> item));
 
         return services.map(
