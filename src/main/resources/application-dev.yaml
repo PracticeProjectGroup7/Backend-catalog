@@ -3,25 +3,6 @@ spring:
     mongodb:
       uri: mongodb://MongoECSUser:Helucipass745@ecsmongodb.cluster-cqunz6ixnkor.ap-southeast-1.docdb.amazonaws.com:27017/healdb?replicaSet=rs0&readPreference=secondaryPreferred&retryWrites=false
       uuid-representation: standard
-  jpa:
-    database-platform: org.hibernate.dialect.MySQL8Dialect
-    properties:
-      hibernate:
-        type: trace
-        show_sql: true
-        format_sql: true
-        use_sql_comments: true
-  datasource:
-    url: jdbc:mysql://heal-db.c8cer7bgfoe7.ap-southeast-1.rds.amazonaws.com/healdb
-    driverClassName: com.mysql.cj.jdbc.Driver
-    username: healmaster
-    password: healgroup7
-
-  flyway:
-    url: jdbc:mysql://heal-db.c8cer7bgfoe7.ap-southeast-1.rds.amazonaws.com/healdb
-    user: healmaster
-    password: healgroup7
-    baselineOnMigrate: true
 
 secEnvConf:
   enableLoginGuard: true

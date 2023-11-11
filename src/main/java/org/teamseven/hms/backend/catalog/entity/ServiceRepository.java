@@ -8,7 +8,6 @@ import org.springframework.data.repository.query.Param;
 
 import java.util.Optional;
 
-//@Repository
 public interface ServiceRepository extends CrudRepository<Service, String> {
     @Query(value = "{ 'type': ?0, 'isActive': 1 }", sort = "{ 'name': 1 }")
     Page<Service> findAvailableServices(
